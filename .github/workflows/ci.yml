@@ -1,0 +1,58 @@
+name: "Build 🔨"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: ""
+    strategy:
+      matrix:
+        scheme:
+          - "JellyfinPlayer"
+          - "JellyfinPlayer tvOS"
+          
+    runs-on: macos-latest
+    
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest
+    
+      - name: Checkout
+        uses: actions/checkout@v1
+      
+      - uses: actions/cache@v2
+        id: cocoapods-cache
+        with:
+          path: Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+            
+      - name: Install pods
+        run: pod install
+      
+      - name: Cache Swift packages
+        uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-${{ matrix.scheme }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.scheme }}-spm-
+            
+      - name: Cache DerivedData folder
+        uses: actions/cache@v2
+        with:
+          path: "~/Library/Developer/Xcode/DerivedData"
+          key: ${{ runner.os }}-${{ matrix.scheme }}-deriveddata
+      
+      - name: xcodebuild!
+        run: |
+          xcodebuild build -workspace "JellyfinPlayer.xcworkspace" \
+          -scheme "${{ matrix.scheme }}" \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
+      
