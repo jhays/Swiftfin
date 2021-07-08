@@ -82,7 +82,7 @@ final class SessionManager {
 
     fileprivate func getAuthToken(userID: String) -> String? {
         let keychain = KeychainSwift()
-        keychain.accessGroup = "9R8RREG67J.me.vigue.jellyfin.sharedKeychain"
+        keychain.accessGroup = "com.byatt.jellyfin.sharedKeychain"
         return keychain.get("AccessToken_\(userID)")
     }
 
@@ -137,7 +137,7 @@ final class SessionManager {
                 _ = try? PersistenceController.shared.container.viewContext.save()
 
                 let keychain = KeychainSwift()
-                keychain.accessGroup = "9R8RREG67J.me.vigue.jellyfin.sharedKeychain"
+                keychain.accessGroup = "com.byatt.jellyfin.sharedKeychain"
                 keychain.set(accessToken!, forKey: "AccessToken_\(user.user_id!)")
 
                 generateAuthHeader(with: accessToken, deviceID: user.device_uuid)
@@ -154,12 +154,13 @@ final class SessionManager {
         nc.post(name: Notification.Name("didSignOut"), object: nil)
         dump(user)
         let keychain = KeychainSwift()
-        keychain.accessGroup = "9R8RREG67J.me.vigue.jellyfin.sharedKeychain"
+        keychain.accessGroup = "com.byatt.jellyfin.sharedKeychain"
         keychain.delete("AccessToken_\(user?.user_id ?? "")")
         generateAuthHeader(with: nil, deviceID: nil)
-
-        let deleteRequest = NSBatchDeleteRequest(objectIDs: [user.objectID])
-        user = nil
-        _ = try? PersistenceController.shared.container.viewContext.execute(deleteRequest)
+        if user != nil {
+            let deleteRequest = NSBatchDeleteRequest(objectIDs: [user.objectID])
+            user = nil
+            _ = try? PersistenceController.shared.container.viewContext.execute(deleteRequest)
+        }
     }
 }

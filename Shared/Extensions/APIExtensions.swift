@@ -4,6 +4,19 @@ import UIKit
 
 // 001fC^ = dark grey plain blurhash
 
+extension UserDto {
+    
+    func getUserProfileImageURL(width: Int = 500) -> URL? {
+        guard let baseURL = ServerEnvironment.current.server.baseURI else {
+            return nil
+        }
+        guard let tag = self.primaryImageTag, let id = self.id else {
+            return nil
+        }
+        return URL(string: "\(baseURL)/Users/\(id)/Images/Primary?width=\(width)&quality=80&tag=\(tag)")
+    }
+}
+
 extension BaseItemDto {
 
     // MARK: Images
