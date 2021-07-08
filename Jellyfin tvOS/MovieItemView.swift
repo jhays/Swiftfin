@@ -5,36 +5,36 @@ import SwiftUIFocusGuide
 struct MovieItemView: View {
     @ObservedObject var viewModel: MovieItemViewModel
 
-    @State var actors: [BaseItemPerson] = [];
-    @State var studio: String? = nil;
-    @State var director: String? = nil;
-    
-    @State var wrappedScrollView: UIScrollView?;
-    
+    @State var actors: [BaseItemPerson] = []
+    @State var studio: String?
+    @State var director: String?
+
+    @State var wrappedScrollView: UIScrollView?
+
     @StateObject var focusBag = SwiftUIFocusBag()
-    
+
     @Namespace private var namespace
-    
+
     func onAppear() {
         actors = []
         director = nil
         studio = nil
-        var actor_index = 0;
+        var actor_index = 0
         viewModel.item.people?.forEach { person in
-            if(person.type == "Actor") {
-                if(actor_index < 4) {
+            if person.type == "Actor" {
+                if actor_index < 4 {
                     actors.append(person)
                 }
-                actor_index = actor_index + 1;
+                actor_index = actor_index + 1
             }
-            if(person.type == "Director") {
+            if person.type == "Director" {
                 director = person.name ?? ""
             }
         }
-        
+
         studio = viewModel.item.studios?.first?.name ?? nil
     }
-    
+
     var body: some View {
         ZStack {
             ImageView(src: viewModel.item.getBackdropImage(maxWidth: 1920), bh: viewModel.item.getBackdropImageBlurHash())
@@ -66,10 +66,10 @@ struct MovieItemView: View {
                                     .stroke(Color.secondary, lineWidth: 1))
                         }
                     }
-                    
+
                     HStack {
                         VStack(alignment: .trailing) {
-                            if(studio != nil) {
+                            if studio != nil {
                                 Text("STUDIO")
                                     .font(.body)
                                     .fontWeight(.semibold)
@@ -80,8 +80,8 @@ struct MovieItemView: View {
                                     .foregroundColor(.secondary)
                                     .padding(.bottom, 40)
                             }
-                            
-                            if(director != nil) {
+
+                            if director != nil {
                                 Text("DIRECTOR")
                                     .font(.body)
                                     .fontWeight(.semibold)
@@ -92,8 +92,8 @@ struct MovieItemView: View {
                                     .foregroundColor(.secondary)
                                     .padding(.bottom, 40)
                             }
-                            
-                            if(!actors.isEmpty) {
+
+                            if !actors.isEmpty {
                                 Text("CAST")
                                     .font(.body)
                                     .fontWeight(.semibold)
@@ -108,7 +108,7 @@ struct MovieItemView: View {
                             Spacer()
                         }
                         VStack(alignment: .leading) {
-                            if(!(viewModel.item.taglines ?? []).isEmpty) {
+                            if !(viewModel.item.taglines ?? []).isEmpty {
                                 Text(viewModel.item.taglines?.first ?? "")
                                     .font(.body)
                                     .italic()
@@ -119,7 +119,7 @@ struct MovieItemView: View {
                                 .font(.body)
                                 .fontWeight(.medium)
                                 .foregroundColor(.primary)
-                            
+
                             HStack {
                                 VStack {
                                     Button {
@@ -153,7 +153,7 @@ struct MovieItemView: View {
                         }
                     }.padding(.top, 50)
 
-                    if(!viewModel.similarItems.isEmpty) {
+                    if !viewModel.similarItems.isEmpty {
                         Text("More Like This")
                             .font(.headline)
                             .fontWeight(.semibold)

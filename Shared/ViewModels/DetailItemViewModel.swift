@@ -5,7 +5,7 @@ import JellyfinAPI
 class DetailItemViewModel: ViewModel {
     @Published var item: BaseItemDto
     @Published var similarItems: [BaseItemDto] = []
-    
+
     @Published var isWatched = false
     @Published var isFavorited = false
 
@@ -14,10 +14,10 @@ class DetailItemViewModel: ViewModel {
         isFavorited = item.userData?.isFavorite ?? false
         isWatched = item.userData?.played ?? false
         super.init()
-        
+
         getRelatedItems()
     }
-    
+
     func getRelatedItems() {
         LibraryAPI.getSimilarItems(itemId: item.id!, userId: SessionManager.current.user.user_id!, limit: 20, fields: [.primaryImageAspectRatio, .seriesPrimaryImage, .seasonUserData, .overview, .genres, .people])
             .trackActivity(loading)

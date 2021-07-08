@@ -1,4 +1,3 @@
-
 import SwiftUI
 import JellyfinAPI
 
@@ -28,8 +27,7 @@ struct PortraitItemElement: View {
                         }
                     }
                     .padding(2)
-                    .opacity(1)
-                , alignment: .bottomLeading)
+                    .opacity(1), alignment: .bottomLeading)
                 .overlay(
                     ZStack {
                         if item.userData?.played ?? false {
@@ -38,7 +36,7 @@ struct PortraitItemElement: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(Color(.systemBlue))
                         } else {
-                            if(item.userData?.unplayedItemCount != nil) {
+                            if item.userData?.unplayedItemCount != nil {
                                 Image(systemName: "circle.fill")
                                     .foregroundColor(Color(.systemBlue))
                                 Text(String(item.userData!.unplayedItemCount ?? 0))
