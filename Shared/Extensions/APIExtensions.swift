@@ -149,14 +149,14 @@ extension BaseItemDto {
             return "\(String(progminutes))m"
         }
     }
-    
+
     func premiereDateToString() -> String? {
         if let date = premiereDate {
             let formatter = DateFormatter()
             formatter.dateFormat = "d MMM yyyy"
             return formatter.string(from: date)
         }
-        
+
         return nil
     }
 }
