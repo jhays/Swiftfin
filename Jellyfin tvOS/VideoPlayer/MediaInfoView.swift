@@ -41,11 +41,11 @@ struct MediaInfoView: View {
                     if item.type == "Episode" {
                         Text(item.seriesName ?? "Series")
                             .fontWeight(.bold)
-                        
+
                         HStack {
                             Text(item.name ?? "Episode")
                                 .foregroundColor(.secondary)
-                            
+
                             Text(item.getEpisodeLocator())
 
                             if let date = item.premiereDate {
@@ -58,7 +58,7 @@ struct MediaInfoView: View {
                     }
 
                     HStack(spacing: 10) {
-                        if(item.type != "Episode") {
+                        if item.type != "Episode" {
                             if let year = item.productionYear {
                                 Text(String(year))
                             }

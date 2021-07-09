@@ -2,7 +2,7 @@ import SwiftUI
 import JellyfinAPI
 struct PortraitItemView: View {
     var item: BaseItemDto
-    
+
     var body: some View {
         NavigationLink(destination: LazyView { ItemView(item: item) }) {
             VStack(alignment: .leading) {
@@ -30,8 +30,7 @@ struct PortraitItemView: View {
                         }
                         .padding(.leading, 2)
                         .padding(.bottom, item.userData?.playedPercentage == nil ? 2 : 9)
-                        .opacity(1)
-                    , alignment: .bottomLeading)
+                        .opacity(1), alignment: .bottomLeading)
                     .overlay(
                         ZStack {
                             if item.userData?.played ?? false {
@@ -40,7 +39,7 @@ struct PortraitItemView: View {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(Color(.systemBlue))
                             } else {
-                                if(item.userData?.unplayedItemCount != nil) {
+                                if item.userData?.unplayedItemCount != nil {
                                     Image(systemName: "circle.fill")
                                         .foregroundColor(Color(.systemBlue))
                                     Text(String(item.userData!.unplayedItemCount ?? 0))
@@ -55,12 +54,12 @@ struct PortraitItemView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
                     .lineLimit(1)
-                if(item.type == "Movie" || item.type == "Series") {
+                if item.type == "Movie" || item.type == "Series" {
                     Text("\(String(item.productionYear ?? 0)) • \(item.officialRating ?? "N/A")")
                         .foregroundColor(.secondary)
                         .font(.caption)
                         .fontWeight(.medium)
-                } else if(item.type == "Season") {
+                } else if item.type == "Season" {
                     Text("\(item.name ?? "") • \(String(item.productionYear ?? 0))")
                         .foregroundColor(.secondary)
                         .font(.caption)

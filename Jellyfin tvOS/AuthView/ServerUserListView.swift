@@ -9,15 +9,15 @@ import Combine
 import SwiftUI
 import JellyfinAPI
 
-class UserListViewModel : ViewModel {
-    
+class UserListViewModel: ViewModel {
+
     @Published var users = [UserDto]()
-    
+
     override init() {
         super.init()
         fetchUsers()
     }
-    
+
     func fetchUsers() {
         if ServerEnvironment.current.server != nil {
             UserAPI.getPublicUsers()
@@ -30,7 +30,7 @@ class UserListViewModel : ViewModel {
                 .store(in: &cancellables)
             }
     }
-    
+
     func authorise(user: UserDto) {
         SessionManager.current.login(username: user.name!, password: "")
             .trackActivity(loading)
@@ -56,19 +56,18 @@ class UserListViewModel : ViewModel {
     }
 }
 
-
 struct ServerUserListView: View {
-   
+
     @StateObject var viewModel = UserListViewModel()
-    
+
     var body: some View {
         NavigationView {
             ZStack {
                 // Sretch frame to whole screen for background color
                 Spacer()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
-                VStack{
+
+                VStack {
                     Text("Whos Watching?")
                         .font(.title)
                         .padding(.bottom, 30)
@@ -77,26 +76,23 @@ struct ServerUserListView: View {
                             // Link to manual sign in
                             if user.hasPassword ?? true {
                                 NavigationLink(
-                                    destination: CredentialEntryView(user))
-                                {
+                                    destination: CredentialEntryView(user)) {
                                     UserImageBoxView(user)
                                 }
                                 .buttonStyle(CardButtonStyle())
-                                
-                            }
-                            else {
+
+                            } else {
                                 // Sign in without password
                                 Button(action: {viewModel.authorise(user: user)}, label: {
                                     UserImageBoxView(user)
                                 })
                                 .buttonStyle(CardButtonStyle())
-                                
+
                             }
                         }
-                        
+
                         NavigationLink(
-                            destination: CredentialEntryView())
-                        {
+                            destination: CredentialEntryView()) {
                             VStack {
                                 Image(systemName: "person.fill.badge.plus")
                                     .resizable()
@@ -122,25 +118,22 @@ struct ServerUserListView: View {
                 startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all))
     }
-    
-    
-    
+
     struct UserImageBoxView: View {
-        
-        let user : UserDto
-        
-        
-        init(_ user : UserDto) {
+
+        let user: UserDto
+
+        init(_ user: UserDto) {
             self.user = user
         }
-        
-        private var profileImageURL: URL?{
+
+        private var profileImageURL: URL? {
             if let _ = user.primaryImageTag {
                 return user.getUserProfileImageURL()
             }
             return nil
         }
-        
+
         var body: some View {
             VStack {
                 image
@@ -149,19 +142,19 @@ struct ServerUserListView: View {
                     .padding(.bottom)
             }
         }
-        
+
         /// URLImage
         private var image: some View {
-            
+
             if let url = profileImageURL {
                 return AnyView(ImageView(src: url)
                                 .frame(width: 300, height: 300)
                 )
             }
-            
+
             return AnyView(placeholder)
         }
-        
+
         /// Placeholder for loading URLImage
         private var placeholder: some View {
             Image(systemName: "person.fill")

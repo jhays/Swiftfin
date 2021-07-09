@@ -8,9 +8,9 @@
 import SwiftUI
 import JellyfinAPI
 
-class ServerSelectionViewModel : ViewModel {
-    
-    func setServer(url: URL, completion: @escaping () -> ()) {
+class ServerSelectionViewModel: ViewModel {
+
+    func setServer(url: URL, completion: @escaping () -> Void) {
         ServerEnvironment.current.create(with: url.absoluteString)
             .trackActivity(loading)
             .sink(receiveCompletion: { result in
@@ -25,25 +25,23 @@ class ServerSelectionViewModel : ViewModel {
             })
             .store(in: &cancellables)
     }
-    
-}
 
+}
 
 struct ServerSelectionView: View {
     /// Servers Discovered By ServerLookup
     @State var servers: [ServerDiscovery.ServerLookupResponse] = []
-    
+
     @State var searching = false
-    
+
     private let locator: ServerDiscovery = ServerDiscovery()
-    
+
     @State private var serverSelected = false
-    
+
     @StateObject var viewModel = ServerSelectionViewModel()
-        
-    
+
     var body: some View {
-        
+
         GeometryReader { geometry in
             HStack {
                 VStack {
@@ -53,9 +51,9 @@ struct ServerSelectionView: View {
                         .scaleEffect(0.75)
                 }
                 .frame(width: geometry.size.width * 1/2)
-                
+
                 VStack(alignment: .center) {
-                    
+
                     VStack {
                         HStack(spacing: 5) {
                             Spacer()
@@ -65,15 +63,15 @@ struct ServerSelectionView: View {
                             ProgressView()
                                 .frame(width: 200)
                                 .hidden(!searching)
-                            
+
                         }
-                        
+
                         Group {
                             ScrollView {
                                 VStack(spacing: 10) {
-                                    
+
                                     if self.servers.count > 0 {
-                                        ForEach(self.servers, id:\.id) { server in
+                                        ForEach(self.servers, id: \.id) { server in
                                             Button {
                                                 let url = URL(string: "http://\(server.host):\(server.port)")!
                                                 viewModel.setServer(url: url) {
@@ -85,30 +83,27 @@ struct ServerSelectionView: View {
                                             .background(
                                                 NavigationLink(
                                                     destination: ServerUserListView(),
-                                                    isActive: $serverSelected)
-                                                {
+                                                    isActive: $serverSelected) {
                                                     EmptyView()
                                                 }
                                                 .buttonStyle(PlainButtonStyle()))
                                         }
                                         .padding()
                                     }
-                                    
-                                    NavigationLink(destination: ServerSelectionView.ManualView())
-                                    {
+
+                                    NavigationLink(destination: ServerSelectionView.ManualView()) {
                                         ServerCardView("Connect Manually",
                                                        "Enter server details manually")
                                     }
                                     .padding()
-                                    
+
                                 }
                             }
-                            
+
                         }
                     }
                     .frame(maxHeight: .infinity)
-                    
-                    
+
                 }
                 .frame(width: geometry.size.width * 1/2)
             }
@@ -120,16 +115,16 @@ struct ServerSelectionView: View {
                 .edgesIgnoringSafeArea(.all))
         .onAppear(perform: discover)
     }
-    
+
     /// Discover Servers
     func discover() {
         searching = true
-        
+
         // Timeout after 5 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             self.searching = false
         }
-        
+
         locator.locateServer { [self] (server) in
             if let server = server, !servers.contains(server) {
                 servers.append(server)
@@ -138,4 +133,3 @@ struct ServerSelectionView: View {
         }
     }
 }
-

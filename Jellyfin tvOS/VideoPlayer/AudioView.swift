@@ -1,7 +1,7 @@
 import SwiftUI
 
 class AudioViewController: InfoTabViewController {
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
