@@ -1,4 +1,4 @@
-import TVUIKit
+import SwiftUI
 import TVVLCKit
 import MediaPlayer
 import JellyfinAPI
@@ -14,7 +14,8 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
     @IBOutlet weak var videoContentView: UIView!
     @IBOutlet weak var controlsView: UIView!
-
+//    @IBOutlet weak var upNextView: UIView!
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet weak var transportBarView: UIView!
@@ -54,6 +55,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     var controlsAppearTime: Double = 0
 
     var manifest: BaseItemDto = BaseItemDto()
+//    var upNextViewModel: UpNextViewModel = UpNextViewModel()
     var playbackItem = PlaybackItem()
     var playSessionId: String = ""
 
@@ -109,6 +111,9 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         transportBarView.layer.cornerRadius = CGFloat(5)
 
+//        if manifest.type == "Episode" {
+//            setupNextUpView()
+//        }
         setupGestures()
 
         fetchVideo()
@@ -157,6 +162,11 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
                     if let transcodiungUrl = mediaSource.transcodingUrl {
                         item.videoType = .transcode
                         streamURL = URL(string: "\(ServerEnvironment.current.server.baseURI!)\(transcodiungUrl)")!
+                        if let reason = URLComponents(string: streamURL.absoluteString)?.queryItems?.first(where: { item in
+                            item.name == "TranscodeReasons"
+                        })?.value {
+                            print("Video has to be transcoded: ", reason)
+                        }
                     }
                     // Item will be directly played by the client
                     else {
@@ -209,7 +219,8 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
                     self.sendPlayReport()
                     playbackItem = item
 
-                    mediaPlayer.media = VLCMedia(url: playbackItem.videoUrl)
+                    let media = VLCMedia(url: playbackItem.videoUrl)
+                    mediaPlayer.media = media
                     mediaPlayer.media.delegate = self
                     mediaPlayer.play()
 
@@ -246,7 +257,6 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         commandCenter.skipForwardCommand.preferredIntervals = [30]
         
         commandCenter.changePlaybackPositionCommand.isEnabled = true
-        commandCenter.enableLanguageOptionCommand.isEnabled = true
 
         // Add handler for Pause Command
         commandCenter.pauseCommand.addTarget { _ in
@@ -269,6 +279,8 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         commandCenter.skipForwardCommand.addTarget { skipEvent in
             self.mediaPlayer.jumpForward(30)
             self.sendProgressReport(eventName: "timeupdate")
+            print("now playing skip forward remote")
+            self.updateNowPlayingCenter(playing: true)
             return .success
         }
 
@@ -276,6 +288,8 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         commandCenter.skipBackwardCommand.addTarget { skipEvent in
             self.mediaPlayer.jumpBackward(15)
             self.sendProgressReport(eventName: "timeupdate")
+            print("now playing skip backward remote")
+            self.updateNowPlayingCenter(playing: true)
             return .success
         }
 
@@ -285,14 +299,14 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
             if let event = remoteEvent as? MPChangePlaybackPositionCommandEvent {
                 let targetSeconds = event.positionTime
-                let videoPosition = Double(self.mediaPlayer.time.intValue / 1000)
-                let offset = targetSeconds - videoPosition
+                let offset = targetSeconds - Double(self.mediaPlayer.time.intValue / 1000)
+                
+                var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [String: Any]()
+                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = targetSeconds
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+                
 
-                if offset > 0 {
-                    self.mediaPlayer.jumpForward(Int32(offset))
-                } else {
-                    self.mediaPlayer.jumpBackward(Int32(abs(offset)))
-                }
+                self.mediaPlayer.jumpForward(Int32(offset))
                 self.sendProgressReport(eventName: "unpause")
 
                 return .success
@@ -303,6 +317,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         var runTicks = 0
         var playbackTicks = 0
+        let imageURL: URL
 
         if let ticks = manifest.runTimeTicks {
             runTicks = Int(ticks / 10_000_000)
@@ -313,17 +328,24 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         }
 
         var nowPlayingInfo = [String: Any]()
-
-        nowPlayingInfo[MPMediaItemPropertyTitle] = manifest.name ?? "Jellyfin Video"
-        if(manifest.type == "Episode") {
-            nowPlayingInfo[MPMediaItemPropertyArtist] = "\(manifest.seriesName ?? manifest.name ?? "") • \(manifest.getEpisodeLocator())"
-        }
+        
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] =  0.0
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = AVMediaType.video
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = runTicks
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playbackTicks
-
-        if let imageData = NSData(contentsOf: manifest.getPrimaryImage(maxWidth: 500)) {
+        
+        if(manifest.type == "Episode") {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = manifest.seriesName ?? "Jellyfin Video"
+            nowPlayingInfo[MPMediaItemPropertyArtist] = "\(manifest.getEpisodeLocator()) • \(manifest.name ?? "")"
+            imageURL = manifest.getSeriesPrimaryImage(maxWidth: 500)
+        }
+        else
+        {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = manifest.name ?? "Jellyfin Video"
+            imageURL = manifest.getPrimaryImage(maxWidth: 500)
+        }
+        
+        if let imageData = NSData(contentsOf: imageURL) {
             if let artworkImage = UIImage(data: imageData as Data) {
                 let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage.size, requestHandler: { (_) -> UIImage in
                     return artworkImage
@@ -337,15 +359,16 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         UIApplication.shared.beginReceivingRemoteControlEvents()
     }
 
-    func updateNowPlayingCenter(time: Double?, playing: Bool?) {
+    func updateNowPlayingCenter(playing: Bool? = nil) {
 
         var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [String: Any]()
 
         if let playing = playing {
             nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = playing ? 1.0 : 0.0
         }
+        
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = mediaPlayer.time.intValue / 1000
-
+        print("Updating time for now playing", formatSecondsToHMS(Double(mediaPlayer.time.intValue) / 1000))
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
 
     }
@@ -375,8 +398,9 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         mediaPlayer.pause()
 
         self.sendProgressReport(eventName: "pause")
-
-        self.updateNowPlayingCenter(time: nil, playing: false)
+        
+        print("now playing paused from pause function")
+        self.updateNowPlayingCenter(playing: false)
 
         animateScrubber()
 
@@ -386,10 +410,11 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     func play () {
         playing = true
         mediaPlayer.play()
-
-        self.updateNowPlayingCenter(time: nil, playing: true)
-
+        
         self.sendProgressReport(eventName: "unpause")
+
+        print("now playing playing from play function")
+        self.updateNowPlayingCenter(playing: true)
 
         animateScrubber()
     }
@@ -399,6 +424,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         infoTabBarViewController?.view.isUserInteractionEnabled = showingInfoPanel
 
+        // Cancel seek to show info panel
         if showingInfoPanel && seeking {
             scrubLabel.isHidden = true
             UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut, animations: {
@@ -411,6 +437,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         }
 
+        // Toggle info container
         UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut) { [self] in
             let size = infoPanelContainerView.frame.size
             let y : CGFloat = showingInfoPanel ? 87 : -size.height
@@ -418,6 +445,41 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             infoPanelContainerView.frame = CGRect(x: 88, y: y, width: size.width, height: size.height)
         }
 
+    }
+    
+//    func setupNextUpView() {
+//        getNextEpisode()
+//        self.upNextViewModel.currentItem = manifest
+//
+//        // Create the swiftUI view
+//        let contentView = UIHostingController(rootView: VideoPlayerUpNextView(viewModel: upNextViewModel))
+//        self.upNextView.addSubview(contentView.view)
+//        contentView.view.backgroundColor = .clear
+//        contentView.view.translatesAutoresizingMaskIntoConstraints = false
+//        contentView.view.topAnchor.constraint(equalTo: upNextView.topAnchor).isActive = true
+//        contentView.view.bottomAnchor.constraint(equalTo: upNextView.bottomAnchor).isActive = true
+//        contentView.view.leftAnchor.constraint(equalTo: upNextView.leftAnchor).isActive = true
+//        contentView.view.rightAnchor.constraint(equalTo: upNextView.rightAnchor).isActive = true
+//    }
+    
+    func getNextEpisode() {
+        TvShowsAPI.getEpisodes(seriesId: manifest.seriesId!, userId: SessionManager.current.user.user_id!, startItemId: manifest.id, limit: 2)
+            .sink(receiveCompletion: { completion in
+                print(completion)
+            }, receiveValue: { [self] response in
+                // Returns 2 items, the first is the current episode
+                // The second is the next episode
+                if let item = response.items?.last {
+//                    self.upNextViewModel.item = item
+                }
+            })
+            .store(in: &cancellables)
+    }
+    
+    
+    
+    func setPlayerToNextUp() {
+        
     }
     
     // MARK: Gestures
@@ -565,20 +627,22 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             seeking = false
             return
         }
-
-        playing ? pause() : play()
+        
+        if playing {
+            pause()
+        }
+        else {
+            play()
+        }
     }
 
     // MARK: Jellyfin Playstate updates
     func sendProgressReport(eventName: String) {
-        updateNowPlayingCenter(time: nil, playing: mediaPlayer.state == .playing)
-        
         if (eventName == "timeupdate" && mediaPlayer.state == .playing) || eventName != "timeupdate" {
             let progressInfo = PlaybackProgressInfo(canSeek: true, item: manifest, itemId: manifest.id, sessionId: playSessionId, mediaSourceId: manifest.id, audioStreamIndex: Int(selectedAudioTrack), subtitleStreamIndex: Int(selectedCaptionTrack), isPaused: (!playing), isMuted: false, positionTicks: Int64(mediaPlayer.position * Float(manifest.runTimeTicks!)), playbackStartTimeTicks: Int64(startTime), volumeLevel: 100, brightness: 100, aspectRatio: nil, playMethod: playbackItem.videoType, liveStreamId: nil, playSessionId: playSessionId, repeatMode: .repeatNone, nowPlayingQueue: [], playlistItemId: "playlistItem0")
 
             PlaystateAPI.reportPlaybackProgress(playbackProgressInfo: progressInfo)
                 .sink(receiveCompletion: { result in
-                    print(result)
                 }, receiveValue: { _ in
                     print("Playback progress report sent!")
                 })
@@ -591,7 +655,6 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         PlaystateAPI.reportPlaybackStopped(playbackStopInfo: stopInfo)
             .sink(receiveCompletion: { result in
-                print(result)
             }, receiveValue: { _ in
                 print("Playback stop report sent!")
             })
@@ -607,7 +670,6 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         PlaystateAPI.reportPlaybackStart(playbackStartInfo: startInfo)
             .sink(receiveCompletion: { result in
-                print(result)
             }, receiveValue: { _ in
                 print("Playback start report sent!")
             })
@@ -615,18 +677,26 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     }
 
     // MARK: VLC Delegate
-
     func mediaPlayerStateChanged(_ aNotification: Notification!) {
         let currentState: VLCMediaPlayerState = mediaPlayer.state
         switch currentState {
         case .buffering:
             print("Video is buffering")
+            if !loading {
+                playing = false
+                mediaPlayer.pause()
+
+                self.sendProgressReport(eventName: "pause")
+                
+                print("now playing paused from buffering")
+                self.updateNowPlayingCenter(playing: false)
+            }
             loading = true
             activityIndicator.isHidden = false
             activityIndicator.startAnimating()
-            mediaPlayer.pause()
             usleep(10000)
             mediaPlayer.play()
+            playing = true
             break
         case .stopped:
             print("stopped")
@@ -647,12 +717,11 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         case .playing:
             print("Video is playing")
             loading = false
-            sendProgressReport(eventName: "unpause")
             DispatchQueue.main.async { [self] in
                 activityIndicator.isHidden = true
                 activityIndicator.stopAnimating()
             }
-            playing = true
+            play()
             break
         case .error:
             print("error")
@@ -670,6 +739,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
     // Move time along transport bar
     func mediaPlayerTimeChanged(_ aNotification: Notification!) {
+        print("~~~~~ time changed")
 
         if loading {
             loading = false
@@ -677,15 +747,30 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
                 activityIndicator.isHidden = true
                 activityIndicator.stopAnimating()
             }
-            updateNowPlayingCenter(time: nil, playing: true)
+            print("now playing playing from time changed after loading")
+            updateNowPlayingCenter(playing: playing)
         }
 
         let time = mediaPlayer.position
+        print("~~~~~position", time, "time",formatSecondsToHMS(Double(mediaPlayer.time.intValue/1000)),"remaining","-" + formatSecondsToHMS(Double(abs(mediaPlayer.remainingTime.intValue/1000))))
+        
         if time != lastTime {
             self.currentTimeLabel.text = formatSecondsToHMS(Double(mediaPlayer.time.intValue/1000))
             self.remainingTimeLabel.text = "-" + formatSecondsToHMS(Double(abs(mediaPlayer.remainingTime.intValue/1000)))
 
             self.videoPos = Double(mediaPlayer.position)
+            
+//            if manifest.type == "Episode" && upNextViewModel.item != nil{
+//                if time > 0.96 {
+//                    print("Showing up next")
+//                    upNextView.isHidden = false
+//                    UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut) { [self] in
+//                        videoContentView.frame = CGRect(x: 95, y: 135, width: 555, height: 310)
+//                    }
+//                } else {
+//                    upNextView.isHidden = true
+//                }
+//            }
 
             let newPos = videoPos * Double(self.transportBarView.frame.width)
             if !newPos.isNaN && self.playing {

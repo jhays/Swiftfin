@@ -82,7 +82,7 @@ extension BaseItemDto {
     
     func getEpisodeLocator() -> String {
         if let seasonNo = self.parentIndexNumber, let episodeNo = self.indexNumber {
-            return "S\(seasonNo):E\(episodeNo)"
+            return "S\(seasonNo) • E\(episodeNo)"
         }
         return ""
     }
