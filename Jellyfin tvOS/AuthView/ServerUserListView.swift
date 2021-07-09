@@ -23,7 +23,7 @@ class UserListViewModel: ViewModel {
             UserAPI.getPublicUsers()
                 .trackActivity(loading)
                 .sink(receiveCompletion: { completion in
-                    switch completion{
+                    switch completion {
                     case .finished:
                         break
                     case .failure(let error):
@@ -134,8 +134,8 @@ struct ServerUserListView: View {
 
         init(_ user: UserDto) {
             self.user = user
-        }        
-        private var profileImageURL: URL?{
+        }
+        private var profileImageURL: URL? {
             user.getUserProfileImageURL()
 
         }

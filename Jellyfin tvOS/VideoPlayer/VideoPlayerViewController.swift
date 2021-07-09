@@ -15,7 +15,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     @IBOutlet weak var videoContentView: UIView!
     @IBOutlet weak var controlsView: UIView!
 //    @IBOutlet weak var upNextView: UIView!
-    
+
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet weak var transportBarView: UIView!
@@ -300,11 +300,10 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             if let event = remoteEvent as? MPChangePlaybackPositionCommandEvent {
                 let targetSeconds = event.positionTime
                 let offset = targetSeconds - Double(self.mediaPlayer.time.intValue / 1000)
-                
+
                 var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [String: Any]()
                 nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = targetSeconds
                 MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-                
 
                 self.mediaPlayer.jumpForward(Int32(offset))
                 self.sendProgressReport(eventName: "unpause")
@@ -333,18 +332,16 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = AVMediaType.video
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = runTicks
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playbackTicks
-        
-        if(manifest.type == "Episode") {
+
+        if manifest.type == "Episode" {
             nowPlayingInfo[MPMediaItemPropertyTitle] = manifest.seriesName ?? "Jellyfin Video"
             nowPlayingInfo[MPMediaItemPropertyArtist] = "\(manifest.getEpisodeLocator()) • \(manifest.name ?? "")"
             imageURL = manifest.getSeriesPrimaryImage(maxWidth: 500)
-        }
-        else
-        {
+        } else {
             nowPlayingInfo[MPMediaItemPropertyTitle] = manifest.name ?? "Jellyfin Video"
             imageURL = manifest.getPrimaryImage(maxWidth: 500)
         }
-        
+
         if let imageData = NSData(contentsOf: imageURL) {
             if let artworkImage = UIImage(data: imageData as Data) {
                 let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage.size, requestHandler: { (_) -> UIImage in
@@ -366,7 +363,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         if let playing = playing {
             nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = playing ? 1.0 : 0.0
         }
-        
+
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = mediaPlayer.time.intValue / 1000
         print("Updating time for now playing", formatSecondsToHMS(Double(mediaPlayer.time.intValue) / 1000))
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
@@ -398,7 +395,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         mediaPlayer.pause()
 
         self.sendProgressReport(eventName: "pause")
-        
+
         print("now playing paused from pause function")
         self.updateNowPlayingCenter(playing: false)
 
@@ -410,7 +407,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     func play () {
         playing = true
         mediaPlayer.play()
-        
+
         self.sendProgressReport(eventName: "unpause")
 
         print("now playing playing from play function")
@@ -461,7 +458,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 //        contentView.view.leftAnchor.constraint(equalTo: upNextView.leftAnchor).isActive = true
 //        contentView.view.rightAnchor.constraint(equalTo: upNextView.rightAnchor).isActive = true
 //    }
-    
+
     func getNextEpisode() {
         TvShowsAPI.getEpisodes(seriesId: manifest.seriesId!, userId: SessionManager.current.user.user_id!, startItemId: manifest.id, limit: 2)
             .sink(receiveCompletion: { completion in
@@ -475,13 +472,11 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             })
             .store(in: &cancellables)
     }
-    
-    
-    
+
     func setPlayerToNextUp() {
-        
+
     }
-    
+
     // MARK: Gestures
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         for item in presses {
@@ -627,11 +622,10 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             seeking = false
             return
         }
-        
+
         if playing {
             pause()
-        }
-        else {
+        } else {
             play()
         }
     }
@@ -642,7 +636,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             let progressInfo = PlaybackProgressInfo(canSeek: true, item: manifest, itemId: manifest.id, sessionId: playSessionId, mediaSourceId: manifest.id, audioStreamIndex: Int(selectedAudioTrack), subtitleStreamIndex: Int(selectedCaptionTrack), isPaused: (!playing), isMuted: false, positionTicks: Int64(mediaPlayer.position * Float(manifest.runTimeTicks!)), playbackStartTimeTicks: Int64(startTime), volumeLevel: 100, brightness: 100, aspectRatio: nil, playMethod: playbackItem.videoType, liveStreamId: nil, playSessionId: playSessionId, repeatMode: .repeatNone, nowPlayingQueue: [], playlistItemId: "playlistItem0")
 
             PlaystateAPI.reportPlaybackProgress(playbackProgressInfo: progressInfo)
-                .sink(receiveCompletion: { result in
+                .sink(receiveCompletion: { _ in
                 }, receiveValue: { _ in
                     print("Playback progress report sent!")
                 })
@@ -654,7 +648,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         let stopInfo = PlaybackStopInfo(item: manifest, itemId: manifest.id, sessionId: playSessionId, mediaSourceId: manifest.id, positionTicks: Int64(mediaPlayer.position * Float(manifest.runTimeTicks!)), liveStreamId: nil, playSessionId: playSessionId, failed: nil, nextMediaType: nil, playlistItemId: "playlistItem0", nowPlayingQueue: [])
 
         PlaystateAPI.reportPlaybackStopped(playbackStopInfo: stopInfo)
-            .sink(receiveCompletion: { result in
+            .sink(receiveCompletion: { _ in
             }, receiveValue: { _ in
                 print("Playback stop report sent!")
             })
@@ -669,7 +663,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         let startInfo = PlaybackStartInfo(canSeek: true, item: manifest, itemId: manifest.id, sessionId: playSessionId, mediaSourceId: manifest.id, audioStreamIndex: Int(selectedAudioTrack), subtitleStreamIndex: Int(selectedCaptionTrack), isPaused: false, isMuted: false, positionTicks: manifest.userData?.playbackPositionTicks, playbackStartTimeTicks: Int64(startTime), volumeLevel: 100, brightness: 100, aspectRatio: nil, playMethod: playbackItem.videoType, liveStreamId: nil, playSessionId: playSessionId, repeatMode: .repeatNone, nowPlayingQueue: [], playlistItemId: "playlistItem0")
 
         PlaystateAPI.reportPlaybackStart(playbackStartInfo: startInfo)
-            .sink(receiveCompletion: { result in
+            .sink(receiveCompletion: { _ in
             }, receiveValue: { _ in
                 print("Playback start report sent!")
             })
@@ -687,7 +681,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
                 mediaPlayer.pause()
 
                 self.sendProgressReport(eventName: "pause")
-                
+
                 print("now playing paused from buffering")
                 self.updateNowPlayingCenter(playing: false)
             }
@@ -752,14 +746,14 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         }
 
         let time = mediaPlayer.position
-        print("~~~~~position", time, "time",formatSecondsToHMS(Double(mediaPlayer.time.intValue/1000)),"remaining","-" + formatSecondsToHMS(Double(abs(mediaPlayer.remainingTime.intValue/1000))))
-        
+        print("~~~~~position", time, "time", formatSecondsToHMS(Double(mediaPlayer.time.intValue/1000)), "remaining", "-" + formatSecondsToHMS(Double(abs(mediaPlayer.remainingTime.intValue/1000))))
+
         if time != lastTime {
             self.currentTimeLabel.text = formatSecondsToHMS(Double(mediaPlayer.time.intValue/1000))
             self.remainingTimeLabel.text = "-" + formatSecondsToHMS(Double(abs(mediaPlayer.remainingTime.intValue/1000)))
 
             self.videoPos = Double(mediaPlayer.position)
-            
+
 //            if manifest.type == "Episode" && upNextViewModel.item != nil{
 //                if time > 0.96 {
 //                    print("Showing up next")
