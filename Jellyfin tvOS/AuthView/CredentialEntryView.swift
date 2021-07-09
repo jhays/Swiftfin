@@ -9,7 +9,7 @@ import SwiftUI
 import JellyfinAPI
 
 class CredentialEntryViewModel: ViewModel {
-    
+
     func authorise(username: String, password: String) {
         print("Auhtorising")
         SessionManager.current.login(username: username, password: password)
@@ -28,7 +28,7 @@ class CredentialEntryViewModel: ViewModel {
             })
             .store(in: &cancellables)
     }
-    
+
 }
 
 struct CredentialEntryView: View {
@@ -44,9 +44,9 @@ struct CredentialEntryView: View {
     @State var showingAlert: Bool = false
 
     @State var isCredentialsFilledIn: Bool = false
-    
-    var user: UserDto? = nil
-    
+
+    var user: UserDto?
+
     @StateObject var viewModel = CredentialEntryViewModel()
 
     init(_ user: UserDto? = nil) {
