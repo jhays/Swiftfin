@@ -482,6 +482,18 @@
 			path = AuthView;
 			sourceTree = "<group>";
 		};
+		0902968A269819300075B1FC /* ItemViews */ = {
+			isa = PBXGroup;
+			children = (
+				53CD2A3F268A49C2002ABD4E /* ItemView.swift */,
+				53CD2A41268A4B38002ABD4E /* MovieItemView.swift */,
+				53116A16268B919A003024C9 /* SeriesItemView.swift */,
+				53272536268C1DBB0035FBF1 /* SeasonItemView.swift */,
+				53272538268C20100035FBF1 /* EpisodeItemView.swift */,
+			);
+			path = ItemViews;
+			sourceTree = "<group>";
+		};
 		091B5A852683142E00D78B61 /* ServerLocator */ = {
 			isa = PBXGroup;
 			children = (
@@ -543,6 +555,7 @@
 		535870612669D21600D05A09 /* Jellyfin tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				0902968A269819300075B1FC /* ItemViews */,
 				0902967A269677B60075B1FC /* AuthView */,
 				5310694F2684E7EE00CFFDBA /* VideoPlayer */,
 				536D3D77267BB9650004248C /* Components */,
@@ -560,11 +573,6 @@
 				531690F8267AD135005D8AB9 /* README.md */,
 				536D3D7E267BDF100004248C /* LatestMediaView.swift */,
 				53A83C32268A309300DF3D92 /* LibraryView.swift */,
-				53CD2A3F268A49C2002ABD4E /* ItemView.swift */,
-				53CD2A41268A4B38002ABD4E /* MovieItemView.swift */,
-				53116A16268B919A003024C9 /* SeriesItemView.swift */,
-				53272536268C1DBB0035FBF1 /* SeasonItemView.swift */,
-				53272538268C20100035FBF1 /* EpisodeItemView.swift */,
 			);
 			path = "Jellyfin tvOS";
 			sourceTree = "<group>";

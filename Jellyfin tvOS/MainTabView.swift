@@ -9,7 +9,6 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack {
-            // please do not touch my magical crossfading. i will wave my magical github wand and cry
             if viewModel.lastBackgroundURL != nil {
                 ImageView(src: viewModel.lastBackgroundURL!, bh: viewModel.backgroundBlurHash)
                     .frame(minWidth: 100, maxWidth: .infinity, minHeight: 100, maxHeight: .infinity)
@@ -34,14 +33,12 @@ struct MainTabView: View {
                     .offset(y: -1) // don't remove this. it breaks tabview on 4K displays.
                 .tabItem {
                     Text(Tab.home.localized)
-                    Image(systemName: "house")
                 }
                 .tag(Tab.home)
 
                 Text("Library")
                 .tabItem {
                     Text(Tab.allMedia.localized)
-                    Image(systemName: "folder")
                 }
                 .tag(Tab.allMedia)
             }
