@@ -229,7 +229,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
                     if let rawStartTicks = manifest.userData?.playbackPositionTicks {
                         mediaPlayer.jumpForward(Int32(rawStartTicks / 10_000_000))
                     }
-                    
+
                     subtitleTrackArray.forEach { sub in
                         if sub.id != -1 && sub.delivery == .external {
                             mediaPlayer.addPlaybackSlave(sub.url!, type: .subtitle, enforce: false)
@@ -249,13 +249,13 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.playCommand.isEnabled = true
         commandCenter.pauseCommand.isEnabled = true
-        
+
         commandCenter.skipBackwardCommand.isEnabled = true
         commandCenter.skipBackwardCommand.preferredIntervals = [15]
-        
+
         commandCenter.skipForwardCommand.isEnabled = true
         commandCenter.skipForwardCommand.preferredIntervals = [30]
-        
+
         commandCenter.changePlaybackPositionCommand.isEnabled = true
 
         // Add handler for Pause Command
@@ -276,7 +276,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         }
 
         // Add handler for FF command
-        commandCenter.skipForwardCommand.addTarget { skipEvent in
+        commandCenter.skipForwardCommand.addTarget { _ in
             self.mediaPlayer.jumpForward(30)
             self.sendProgressReport(eventName: "timeupdate")
             print("now playing skip forward remote")
@@ -285,7 +285,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         }
 
         // Add handler for RW command
-        commandCenter.skipBackwardCommand.addTarget { skipEvent in
+        commandCenter.skipBackwardCommand.addTarget { _ in
             self.mediaPlayer.jumpBackward(15)
             self.sendProgressReport(eventName: "timeupdate")
             print("now playing skip backward remote")
@@ -328,7 +328,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         }
 
         var nowPlayingInfo = [String: Any]()
-        
+
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] =  0.0
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = AVMediaType.video
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = runTicks
@@ -440,13 +440,13 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         // Toggle info container
         UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut) { [self] in
             let size = infoPanelContainerView.frame.size
-            let y : CGFloat = showingInfoPanel ? 87 : -size.height
-            
+            let y: CGFloat = showingInfoPanel ? 87 : -size.height
+
             infoPanelContainerView.frame = CGRect(x: 88, y: y, width: size.width, height: size.height)
         }
 
     }
-    
+
 //    func setupNextUpView() {
 //        getNextEpisode()
 //        self.upNextViewModel.currentItem = manifest
@@ -485,16 +485,16 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     // MARK: Gestures
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         for item in presses {
-            if(item.type == .select) {
+            if item.type == .select {
                 selectButtonTapped()
             }
         }
     }
-    
+
     func setupGestures() {
         self.becomeFirstResponder()
-        
-        //vlc crap
+
+        // vlc crap
         videoContentView.gestureRecognizers?.forEach { gr in
             videoContentView.removeGestureRecognizer(gr)
         }
@@ -503,17 +503,17 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
                 sv.removeGestureRecognizer(gr)
             }
         }
-        
+
         let playPauseGesture = UITapGestureRecognizer(target: self, action: #selector(self.selectButtonTapped))
         let playPauseType = UIPress.PressType.playPause
         playPauseGesture.allowedPressTypes = [NSNumber(value: playPauseType.rawValue)]
         view.addGestureRecognizer(playPauseGesture)
-        
+
         let backTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.backButtonPressed(tap:)))
         let backPress = UIPress.PressType.menu
         backTapGesture.allowedPressTypes = [NSNumber(value: backPress.rawValue)]
         view.addGestureRecognizer(backTapGesture)
-        
+
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.userPanned(panGestureRecognizer:)))
         view.addGestureRecognizer(panGestureRecognizer)
     }
@@ -551,7 +551,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 
         let translation = panGestureRecognizer.translation(in: view)
         let velocity = panGestureRecognizer.velocity(in: view)
-        
+
         // Swiped up - Handle dismissing info panel
         if translation.y < -200 && (focusedOnTabBar && showingInfoPanel) {
             toggleInfoContainer()

@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         scheme:
-          - "JellyfinPlayer"
-          - "JellyfinPlayer tvOS"
+          - "Jellyfin"
+          - "Jellyfin tvOS"
           
     runs-on: macos-latest
     
@@ -52,7 +52,7 @@ jobs:
       
       - name: xcodebuild!
         run: |
-          xcodebuild build -workspace "JellyfinPlayer.xcworkspace" \
+          xcodebuild build -workspace "Jellyfin.xcworkspace" \
           -scheme "${{ matrix.scheme }}" \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
       

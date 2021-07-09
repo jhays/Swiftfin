@@ -9,14 +9,13 @@ import SwiftUI
 
 extension ServerSelectionView {
     public struct ServerCardView: View {
-        
+
         /// Title
         private let title: LocalizedStringKey
-        
+
         /// Subtitle
         private let subtitle: LocalizedStringKey
-        
-        
+
         /// Initializer
         /// - Parameters:
         ///   - title: Title
@@ -25,15 +24,14 @@ extension ServerSelectionView {
             self.title = title
             self.subtitle = subtitle
         }
-        
-        
+
         /// Initializer
         /// - Parameter server: ServerLookupResponse (UDPBroadcast)
         public init(_ server: ServerDiscovery.ServerLookupResponse) {
             self.title = LocalizedStringKey(server.name)
             self.subtitle = LocalizedStringKey("\(server.host):\(String(server.port))")
         }
-        
+
         public var body: some View {
             HStack {
                 Image(systemName: "server.rack")
@@ -53,4 +51,3 @@ extension ServerSelectionView {
         }
     }
 }
-

@@ -78,7 +78,7 @@ final class LibraryViewModel: ViewModel {
             })
             .store(in: &cancellables)
     }
-    
+
     func requestItemsAsync(with filters: LibraryFilters) {
         let personIDs: [String] = [person].compactMap(\.?.id)
         let studioIDs: [String] = [studio].compactMap(\.?.id)
@@ -112,7 +112,7 @@ final class LibraryViewModel: ViewModel {
         currentPage += 1
         requestItems(with: filters)
     }
-    
+
     func requestNextPageAsync() {
         currentPage += 1
         requestItemsAsync(with: filters)

@@ -4,13 +4,13 @@ import SwiftUIFocusGuide
 
 struct SeasonItemView: View {
     @ObservedObject var viewModel: SeasonItemViewModel
-    @State var wrappedScrollView: UIScrollView?;
-    
+    @State var wrappedScrollView: UIScrollView?
+
     @StateObject var focusBag = SwiftUIFocusBag()
-    
+
     @Environment(\.resetFocus) var resetFocus
     @Namespace private var namespace
-    
+
     var body: some View {
         ZStack {
             ImageView(src: viewModel.item.getSeriesBackdropImage(maxWidth: 1920), bh: viewModel.item.getSeriesBackdropImageBlurHash())
@@ -22,7 +22,7 @@ struct SeasonItemView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
                     HStack {
-                        if(viewModel.item.productionYear != nil) {
+                        if viewModel.item.productionYear != nil {
                             Text(String(viewModel.item.productionYear!)).font(.subheadline)
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
@@ -49,9 +49,9 @@ struct SeasonItemView: View {
                             }
                         }
                     }
-                    
+
                     VStack(alignment: .leading) {
-                        if(!(viewModel.item.taglines ?? []).isEmpty) {
+                        if !(viewModel.item.taglines ?? []).isEmpty {
                             Text(viewModel.item.taglines?.first ?? "")
                                 .font(.body)
                                 .italic()
@@ -62,7 +62,7 @@ struct SeasonItemView: View {
                             .font(.body)
                             .fontWeight(.medium)
                             .foregroundColor(.primary)
-                        
+
                         HStack {
                             VStack {
                                 Button {
@@ -87,7 +87,7 @@ struct SeasonItemView: View {
                         Spacer()
                     }.padding(.top, 50)
 
-                    if(!viewModel.episodes.isEmpty) {
+                    if !viewModel.episodes.isEmpty {
                         Text("Episodes")
                             .font(.headline)
                             .fontWeight(.semibold)

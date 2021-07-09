@@ -5,7 +5,7 @@ import UIKit
 // 001fC^ = dark grey plain blurhash
 
 extension UserDto {
-    
+
     func getUserProfileImageURL(width: Int = 500) -> URL? {
         guard let baseURL = ServerEnvironment.current.server.baseURI else {
             return nil
@@ -79,7 +79,7 @@ extension BaseItemDto {
         let urlString = "\(ServerEnvironment.current.server.baseURI!)/Items/\(imageItemId)/Images/\(imageType)?maxWidth=\(String(Int(x)))&quality=96&tag=\(imageTag)"
         return URL(string: urlString)!
     }
-    
+
     func getEpisodeLocator() -> String {
         if let seasonNo = self.parentIndexNumber, let episodeNo = self.indexNumber {
             return "S\(seasonNo) • E\(episodeNo)"
@@ -117,7 +117,7 @@ extension BaseItemDto {
         let x = UIScreen.main.nativeScale * CGFloat(maxWidth)
 
         let urlString = "\(ServerEnvironment.current.server.baseURI!)/Items/\(imageItemId)/Images/\(imageType)?maxWidth=\(String(Int(x)))&quality=96&tag=\(imageTag)"
-        //print(urlString)
+        // print(urlString)
         return URL(string: urlString)!
     }
 

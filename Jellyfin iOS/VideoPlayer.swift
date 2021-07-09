@@ -61,21 +61,21 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
     }
     var hasSentRemoteSeek: Bool = false
 
-    var selectedPlaybackSpeedIndex : Int = 3
+    var selectedPlaybackSpeedIndex: Int = 3
     var selectedAudioTrack: Int32 = -1
     var selectedCaptionTrack: Int32 = -1
     var playSessionId: String = ""
     var lastProgressReportTime: Double = 0
     var subtitleTrackArray: [Subtitle] = []
     var audioTrackArray: [AudioTrack] = []
-    let playbackSpeeds : [Float] = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+    let playbackSpeeds: [Float] = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
 
     var manifest: BaseItemDto = BaseItemDto()
     var playbackItem = PlaybackItem()
     var remoteTimeUpdateTimer: Timer?
     var upNextViewModel: UpNextViewModel = UpNextViewModel()
     var lastOri: UIDeviceOrientation!
-    
+
     // MARK: IBActions
     @IBAction func seekSliderStart(_ sender: Any) {
         if playerDestination == .local {
@@ -341,34 +341,34 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
             }
         }
 
-        var nowPlayingInfo = [String : Any]()
-        
+        var nowPlayingInfo = [String: Any]()
+
         var runTicks = 0
         var playbackTicks = 0
-        
+
         if let ticks = manifest.runTimeTicks {
             runTicks = Int(ticks / 10_000_000)
         }
-        
+
         if let ticks = manifest.userData?.playbackPositionTicks {
             playbackTicks = Int(ticks / 10_000_000)
         }
-        
+
         nowPlayingInfo[MPMediaItemPropertyTitle] = manifest.name ?? "Jellyfin Video"
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] =  1.0
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = AVMediaType.video
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = runTicks
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playbackTicks
-        
+
         if let imageData = NSData(contentsOf: manifest.getPrimaryImage(maxWidth: 200)) {
             if let artworkImage = UIImage(data: imageData as Data) {
-                let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage.size, requestHandler: { (size) -> UIImage in
+                let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage.size, requestHandler: { (_) -> UIImage in
                     return artworkImage
                 })
                 nowPlayingInfo[MPMediaItemPropertyArtwork] =  artwork
             }
         }
-        
+
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
 
         UIApplication.shared.beginReceivingRemoteControlEvents()
@@ -380,11 +380,11 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
             titleLabel.text = manifest.name ?? ""
         } else {
             titleLabel.text = "S\(String(manifest.parentIndexNumber ?? 0)):E\(String(manifest.indexNumber ?? 0)) “\(manifest.name ?? "")”"
-            
+
             setupNextUpView()
             upNextViewModel.delegate = self
         }
-        
+
         lastOri = UIDevice.current.orientation
 
         if !UIDevice.current.orientation.isLandscape || UIDevice.current.orientation.isFlat {
@@ -447,12 +447,12 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
 
         mediaPlayer.delegate = self
         mediaPlayer.drawable = videoContentView
-        
+
         setupMediaPlayer()
     }
-    
+
     func setupMediaPlayer() {
-        
+
         // Fetch max bitrate from UserDefaults depending on current connection mode
         let maxBitrate = Defaults[.inNetworkBandwidth]
         print(maxBitrate)
@@ -573,8 +573,8 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
 
                         self.sendPlayReport()
                         playbackItem = item
-                        
-                        //self.setupNowPlayingCC()
+
+                        // self.setupNowPlayingCC()
                     }
 
                     startLocalPlaybackEngine(true)
@@ -671,21 +671,21 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
         selectedAudioTrack = newTrackID
         mediaPlayer.currentAudioTrackIndex = newTrackID
     }
-    
+
     func playbackSpeedChanged(index: Int) {
         selectedPlaybackSpeedIndex = index
         mediaPlayer.rate = playbackSpeeds[index]
     }
-    
+
     func smallNextUpView() {
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn) { [self] in
             upNextViewModel.largeView = false
         }
     }
-    
+
     func setupNextUpView() {
         getNextEpisode()
-        
+
         // Create the swiftUI view
         let contentView = UIHostingController(rootView: VideoUpNextView(viewModel: upNextViewModel))
         self.upNextView.addSubview(contentView.view)
@@ -696,7 +696,7 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
         contentView.view.leftAnchor.constraint(equalTo: upNextView.leftAnchor).isActive = true
         contentView.view.rightAnchor.constraint(equalTo: upNextView.rightAnchor).isActive = true
     }
-    
+
     func getNextEpisode() {
         TvShowsAPI.getEpisodes(seriesId: manifest.seriesId!, userId: SessionManager.current.user.user_id!, startItemId: manifest.id, limit: 2)
             .sink(receiveCompletion: { completion in
@@ -710,22 +710,21 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
             })
             .store(in: &cancellables)
     }
-    
+
     func setPlayerToNextUp() {
         mediaPlayer.stop()
-        
+
         ssTargetValueOffset = 0
         ssStartValue = 0
-        
+
         paused = true
         lastTime = 0.0
         startTime = 0
         controlsAppearTime = 0
         isSeeking = false
 
-     
         remotePositionTicks = 0
-       
+
         selectedPlaybackSpeedIndex = 3
         selectedAudioTrack = -1
         selectedCaptionTrack = -1
@@ -733,22 +732,22 @@ class PlayerViewController: UIViewController, GCKDiscoveryManagerListener, GCKRe
         lastProgressReportTime = 0
         subtitleTrackArray = []
         audioTrackArray = []
-        
+
         manifest = upNextViewModel.item!
         playbackItem = PlaybackItem()
-        
+
         upNextViewModel.item = nil
-        
+
         upNextView.isHidden = true
         shouldShowLoadingScreen = true
         videoControlsView.isHidden = true
 
         titleLabel.text = "S\(String(manifest.parentIndexNumber ?? 0)):E\(String(manifest.indexNumber ?? 0)) “\(manifest.name ?? "")”"
-        
+
         setupMediaPlayer()
         getNextEpisode()
     }
-    
+
 }
 
 // MARK: - GCKGenericChannelDelegate
@@ -944,8 +943,8 @@ extension PlayerViewController: VLCMediaPlayerDelegate {
             mainActionButton.setImage(UIImage(systemName: "pause"), for: .normal)
             seekSlider.setValue(mediaPlayer.position, animated: true)
             delegate?.hideLoadingView(self)
-            
-            if manifest.type == "Episode" && upNextViewModel.item != nil{
+
+            if manifest.type == "Episode" && upNextViewModel.item != nil {
                 if time > 0.96 {
                     upNextView.isHidden = false
                     self.jumpForwardButton.isHidden = true
@@ -954,7 +953,7 @@ extension PlayerViewController: VLCMediaPlayerDelegate {
                     self.jumpForwardButton.isHidden = false
                 }
             }
-            
+
             timeText.text = String(mediaPlayer.remainingTime.stringValue.dropFirst())
 
             if CACurrentMediaTime() - controlsAppearTime > 5 {
