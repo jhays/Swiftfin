@@ -23,7 +23,14 @@ class UserListViewModel : ViewModel {
             UserAPI.getPublicUsers()
                 .trackActivity(loading)
                 .sink(receiveCompletion: { completion in
-                    self.handleAPIRequestCompletion(completion: completion)
+                    switch completion{
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        self.errorMessage = "Could not connect to server"
+                        print(error)
+                        break
+                    }
                 }, receiveValue: { response in
                     self.users = response
                 })
@@ -110,11 +117,13 @@ struct ServerUserListView: View {
                             }
                         }
                         .buttonStyle(CardButtonStyle())
-                        .padding()
                     }
                     .padding(.top)
                 }
             }
+        }
+        .alert(item: $viewModel.errorMessage) { _ in
+            Alert(title: Text("Error"), message: Text(viewModel.errorMessage ?? ""), dismissButton: .default(Text("Ok")))
         }
         .background(
             LinearGradient(
@@ -135,10 +144,7 @@ struct ServerUserListView: View {
         }
         
         private var profileImageURL: URL?{
-            if let _ = user.primaryImageTag {
-                return user.getUserProfileImageURL()
-            }
-            return nil
+            user.getUserProfileImageURL()
         }
         
         var body: some View {

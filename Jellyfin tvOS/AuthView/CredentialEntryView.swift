@@ -8,6 +8,29 @@
 import SwiftUI
 import JellyfinAPI
 
+class CredentialEntryViewModel: ViewModel {
+    
+    func authorise(username: String, password: String) {
+        print("Auhtorising")
+        SessionManager.current.login(username: username, password: password)
+            .trackActivity(loading)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        self.errorMessage = "Invalid credentials"
+                        print(error)
+                        break
+                }
+            }, receiveValue: { res in
+                print(res)
+            })
+            .store(in: &cancellables)
+    }
+    
+}
+
 struct CredentialEntryView: View {
     @Namespace private var namespace
     @State var profileImageURL: URL? = nil
@@ -24,6 +47,8 @@ struct CredentialEntryView: View {
     @State var isCredentialsFilledIn: Bool = false
     
     var user: UserDto? = nil
+    
+    @StateObject var viewModel = CredentialEntryViewModel()
     
     
     init(_ user: UserDto? = nil) {
@@ -65,15 +90,21 @@ struct CredentialEntryView: View {
                             .prefersDefaultFocus(!username.isEmpty, in: namespace)
                     }.frame(width: 400)
                     
-                    Button(action: authorize) {
+
+                    Button {
+                        viewModel.authorise(username: username, password: password)
+                    } label: {
                         Text("Login").textCase(.uppercase)
                     }
                     .prefersDefaultFocus(!username.isEmpty && !password.isEmpty, in: namespace)
+                    .disabled(username.isEmpty)
                 }
                 
             }
         }
-        
+        .alert(item: $viewModel.errorMessage) { _ in
+            Alert(title: Text("Error"), message: Text(viewModel.errorMessage ?? ""), dismissButton: .default(Text("Ok")))
+        }
         .background(
             LinearGradient(
                 gradient: Gradient(colors: Color.backgroundGradient),
@@ -115,21 +146,5 @@ struct CredentialEntryView: View {
     }
     
     
-    func authorize() {
-        
-//        API.authorize(jellyfin.server, jellyfin.client, username, password) { result in
-//            switch result {
-//            case .success(let jellyfin):
-//                session.setJellyfin(jellyfin, true)
-//
-//            case .failure(let error):
-//                session.setAlert(
-//                    .auth,
-//                    "failed",
-//                    "\(jellyfin.server.https ? "(HTTPS)":"") \(username)@\(jellyfin.server.host):\(jellyfin.server.port)",
-//                    error
-//                )
-//            }
-//        }
-    }
+   
 }
