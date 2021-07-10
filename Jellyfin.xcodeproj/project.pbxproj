@@ -7,19 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0902965D269323FC0075B1FC /* TVServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53ABFDDB267972BF00886593 /* TVServices.framework */; };
-		09029660269323FC0075B1FC /* ContentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0902965F269323FC0075B1FC /* ContentProvider.swift */; };
-		09029664269323FC0075B1FC /* TopShelf.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0902965C269323FC0075B1FC /* TopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		09029669269326440075B1FC /* ServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EC352B26766675000E9F2D /* ServerEnvironment.swift */; };
-		0902966A269326460075B1FC /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EC352E267666A5000E9F2D /* SessionManager.swift */; };
-		0902966B269326C90075B1FC /* APIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5364F454266CA0DC0026ECBA /* APIExtensions.swift */; };
-		0902966C269326D60075B1FC /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621338922660107500A81A2A /* StringExtensions.swift */; };
-		0902966D269326DA0075B1FC /* CollectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6267B3D526710B8900A7371D /* CollectionExtensions.swift */; };
-		0902966E269326E00075B1FC /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6267B3D92671138200A7371D /* ImageExtensions.swift */; };
-		0902966F2693274A0075B1FC /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5358706B2669D21700D05A09 /* PersistenceController.swift */; };
-		09029671269329E70075B1FC /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5377CBFF263B596B003A4E83 /* Model.xcdatamodeld */; };
-		0902967326932AC00075B1FC /* JellyfinAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 0902967226932AC00075B1FC /* JellyfinAPI */; };
-		0902967526932AF60075B1FC /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0902967426932AF60075B1FC /* KeychainSwift */; };
 		09029681269677B60075B1FC /* ServerSelectionManualView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0902967B269677B60075B1FC /* ServerSelectionManualView.swift */; };
 		09029682269677B60075B1FC /* ServerUserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0902967C269677B60075B1FC /* ServerUserListView.swift */; };
 		09029684269677B60075B1FC /* ServerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0902967E269677B60075B1FC /* ServerSelectionView.swift */; };
@@ -27,6 +14,8 @@
 		09029686269677B60075B1FC /* ServerCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09029680269677B60075B1FC /* ServerCardView.swift */; };
 		090296882696C32A0075B1FC /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090296872696C32A0075B1FC /* ColorExtensions.swift */; };
 		090296892696C32A0075B1FC /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090296872696C32A0075B1FC /* ColorExtensions.swift */; };
+		09029690269957300075B1FC /* TVServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53ABFDDB267972BF00886593 /* TVServices.framework */; };
+		09029697269957300075B1FC /* TopShelf.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0902968F269957300075B1FC /* TopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		091B5A8A2683142E00D78B61 /* ServerDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091B5A872683142E00D78B61 /* ServerDiscovery.swift */; };
 		091B5A8B2683142E00D78B61 /* UDPBroadCastConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091B5A882683142E00D78B61 /* UDPBroadCastConnection.swift */; };
 		091B5A8D268315D400D78B61 /* ServerDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091B5A872683142E00D78B61 /* ServerDiscovery.swift */; };
@@ -198,11 +187,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		09029662269323FC0075B1FC /* PBXContainerItemProxy */ = {
+		09029695269957300075B1FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5377CBE9263B596A003A4E83 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 0902965B269323FC0075B1FC;
+			remoteGlobalIDString = 0902968E269957300075B1FC;
 			remoteInfo = TopShelf;
 		};
 		628B952B2670CABE0091AF3B /* PBXContainerItemProxy */ = {
@@ -221,7 +210,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				09029664269323FC0075B1FC /* TopShelf.appex in Embed App Extensions */,
+				09029697269957300075B1FC /* TopShelf.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -249,16 +238,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0902965C269323FC0075B1FC /* TopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0902965F269323FC0075B1FC /* ContentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProvider.swift; sourceTree = "<group>"; };
-		09029661269323FC0075B1FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		09029670269327EC0075B1FC /* TopShelf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TopShelf.entitlements; sourceTree = "<group>"; };
 		0902967B269677B60075B1FC /* ServerSelectionManualView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSelectionManualView.swift; sourceTree = "<group>"; };
 		0902967C269677B60075B1FC /* ServerUserListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerUserListView.swift; sourceTree = "<group>"; };
 		0902967E269677B60075B1FC /* ServerSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSelectionView.swift; sourceTree = "<group>"; };
 		0902967F269677B60075B1FC /* CredentialEntryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialEntryView.swift; sourceTree = "<group>"; };
 		09029680269677B60075B1FC /* ServerCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerCardView.swift; sourceTree = "<group>"; };
 		090296872696C32A0075B1FC /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
+		0902968F269957300075B1FC /* TopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		09029694269957300075B1FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		091B5A872683142E00D78B61 /* ServerDiscovery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerDiscovery.swift; sourceTree = "<group>"; };
 		091B5A882683142E00D78B61 /* UDPBroadCastConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPBroadCastConnection.swift; sourceTree = "<group>"; };
 		09389CC626819B4500AE350E /* VideoPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerModel.swift; sourceTree = "<group>"; };
@@ -400,13 +387,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		09029659269323FC0075B1FC /* Frameworks */ = {
+		0902968C269957300075B1FC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0902967526932AF60075B1FC /* KeychainSwift in Frameworks */,
-				0902967326932AC00075B1FC /* JellyfinAPI in Frameworks */,
-				0902965D269323FC0075B1FC /* TVServices.framework in Frameworks */,
+				09029690269957300075B1FC /* TVServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,16 +443,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0902965E269323FC0075B1FC /* TopShelf */ = {
-			isa = PBXGroup;
-			children = (
-				09029670269327EC0075B1FC /* TopShelf.entitlements */,
-				0902965F269323FC0075B1FC /* ContentProvider.swift */,
-				09029661269323FC0075B1FC /* Info.plist */,
-			);
-			path = TopShelf;
-			sourceTree = "<group>";
-		};
 		0902967A269677B60075B1FC /* AuthView */ = {
 			isa = PBXGroup;
 			children = (
@@ -492,6 +467,14 @@
 				53272538268C20100035FBF1 /* EpisodeItemView.swift */,
 			);
 			path = ItemViews;
+			sourceTree = "<group>";
+		};
+		09029691269957300075B1FC /* TopShelf */ = {
+			isa = PBXGroup;
+			children = (
+				09029694269957300075B1FC /* Info.plist */,
+			);
+			path = TopShelf;
 			sourceTree = "<group>";
 		};
 		091B5A852683142E00D78B61 /* ServerLocator */ = {
@@ -555,11 +538,11 @@
 		535870612669D21600D05A09 /* Jellyfin tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				53ABFDDA267972BF00886593 /* JellyfintvOS.entitlements */,
 				0902968A269819300075B1FC /* ItemViews */,
 				0902967A269677B60075B1FC /* AuthView */,
 				5310694F2684E7EE00CFFDBA /* VideoPlayer */,
 				536D3D77267BB9650004248C /* Components */,
-				53ABFDDA267972BF00886593 /* JellyfintvOS.entitlements */,
 				531690F9267AD6EC005D8AB9 /* PlainNavigationLinkButton.swift */,
 				531690E4267ABD5C005D8AB9 /* MainTabView.swift */,
 				535870622669D21600D05A09 /* JellyfinPlayer_tvOSApp.swift */,
@@ -626,8 +609,8 @@
 				535870612669D21600D05A09 /* Jellyfin tvOS */,
 				5377CBF2263B596A003A4E83 /* Products */,
 				535870752669D60C00D05A09 /* Shared */,
+				09029691269957300075B1FC /* TopShelf */,
 				628B95252670CABD0091AF3B /* WidgetExtension */,
-				0902965E269323FC0075B1FC /* TopShelf */,
 				2F151CD7E4DD8989598DB2AF /* Pods */,
 			);
 			sourceTree = "<group>";
@@ -638,7 +621,7 @@
 				5377CBF1263B596A003A4E83 /* Jellyfin iOS.app */,
 				535870602669D21600D05A09 /* Jellyfin tvOS.app */,
 				628B95202670CABD0091AF3B /* WidgetExtension.appex */,
-				0902965C269323FC0075B1FC /* TopShelf.appex */,
+				0902968F269957300075B1FC /* TopShelf.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -783,25 +766,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0902965B269323FC0075B1FC /* TopShelf */ = {
+		0902968E269957300075B1FC /* TopShelf */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 09029668269323FC0075B1FC /* Build configuration list for PBXNativeTarget "TopShelf" */;
+			buildConfigurationList = 09029698269957300075B1FC /* Build configuration list for PBXNativeTarget "TopShelf" */;
 			buildPhases = (
-				09029658269323FC0075B1FC /* Sources */,
-				09029659269323FC0075B1FC /* Frameworks */,
-				0902965A269323FC0075B1FC /* Resources */,
+				0902968B269957300075B1FC /* Sources */,
+				0902968C269957300075B1FC /* Frameworks */,
+				0902968D269957300075B1FC /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = TopShelf;
-			packageProductDependencies = (
-				0902967226932AC00075B1FC /* JellyfinAPI */,
-				0902967426932AF60075B1FC /* KeychainSwift */,
-			);
 			productName = TopShelf;
-			productReference = 0902965C269323FC0075B1FC /* TopShelf.appex */;
+			productReference = 0902968F269957300075B1FC /* TopShelf.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		5358705F2669D21600D05A09 /* Jellyfin tvOS */ = {
@@ -818,7 +797,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				09029663269323FC0075B1FC /* PBXTargetDependency */,
+				09029696269957300075B1FC /* PBXTargetDependency */,
 			);
 			name = "Jellyfin tvOS";
 			packageProductDependencies = (
@@ -902,7 +881,7 @@
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
-					0902965B269323FC0075B1FC = {
+					0902968E269957300075B1FC = {
 						CreatedOnToolsVersion = 12.5;
 					};
 					5358705F2669D21600D05A09 = {
@@ -943,13 +922,13 @@
 				5377CBF0263B596A003A4E83 /* Jellyfin iOS */,
 				5358705F2669D21600D05A09 /* Jellyfin tvOS */,
 				628B951F2670CABD0091AF3B /* WidgetExtension */,
-				0902965B269323FC0075B1FC /* TopShelf */,
+				0902968E269957300075B1FC /* TopShelf */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0902965A269323FC0075B1FC /* Resources */ = {
+		0902968D269957300075B1FC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1087,19 +1066,10 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		09029658269323FC0075B1FC /* Sources */ = {
+		0902968B269957300075B1FC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0902966B269326C90075B1FC /* APIExtensions.swift in Sources */,
-				0902966D269326DA0075B1FC /* CollectionExtensions.swift in Sources */,
-				09029669269326440075B1FC /* ServerEnvironment.swift in Sources */,
-				0902966C269326D60075B1FC /* StringExtensions.swift in Sources */,
-				09029660269323FC0075B1FC /* ContentProvider.swift in Sources */,
-				09029671269329E70075B1FC /* Model.xcdatamodeld in Sources */,
-				0902966E269326E00075B1FC /* ImageExtensions.swift in Sources */,
-				0902966A269326460075B1FC /* SessionManager.swift in Sources */,
-				0902966F2693274A0075B1FC /* PersistenceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1268,10 +1238,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		09029663269323FC0075B1FC /* PBXTargetDependency */ = {
+		09029696269957300075B1FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0902965B269323FC0075B1FC /* TopShelf */;
-			targetProxy = 09029662269323FC0075B1FC /* PBXContainerItemProxy */;
+			target = 0902968E269957300075B1FC /* TopShelf */;
+			targetProxy = 09029695269957300075B1FC /* PBXContainerItemProxy */;
 		};
 		628B952C2670CABE0091AF3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1281,10 +1251,9 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		09029666269323FC0075B1FC /* Debug */ = {
+		09029699269957300075B1FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TopShelf/TopShelf.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U3ZPB6U89W;
 				INFOPLIST_FILE = TopShelf/Info.plist;
@@ -1293,7 +1262,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.TopShelf;
+				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.tvos.TopShelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -1303,10 +1272,9 @@
 			};
 			name = Debug;
 		};
-		09029667269323FC0075B1FC /* Release */ = {
+		0902969A269957300075B1FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TopShelf/TopShelf.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U3ZPB6U89W;
 				INFOPLIST_FILE = TopShelf/Info.plist;
@@ -1315,7 +1283,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.TopShelf;
+				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.tvos.TopShelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -1329,7 +1297,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A8FCA2E6BACAF4EC4B93679B /* Pods-Jellyfin tvOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Jellyfin tvOS/JellyfintvOS.entitlements";
@@ -1345,7 +1312,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.tvos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_VERSION = 5.0;
@@ -1358,7 +1325,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 131C6AFE2D2D241CB8517E17 /* Pods-Jellyfin tvOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Jellyfin tvOS/JellyfintvOS.entitlements";
@@ -1374,7 +1340,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.tvos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_VERSION = 5.0;
@@ -1624,11 +1590,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		09029668269323FC0075B1FC /* Build configuration list for PBXNativeTarget "TopShelf" */ = {
+		09029698269957300075B1FC /* Build configuration list for PBXNativeTarget "TopShelf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				09029666269323FC0075B1FC /* Debug */,
-				09029667269323FC0075B1FC /* Release */,
+				09029699269957300075B1FC /* Debug */,
+				0902969A269957300075B1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1747,16 +1713,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0902967226932AC00075B1FC /* JellyfinAPI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 53A431BB266B0FF20016769F /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */;
-			productName = JellyfinAPI;
-		};
-		0902967426932AF60075B1FC /* KeychainSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5338F755263B7E2E0014BF09 /* XCRemoteSwiftPackageReference "keychain-swift" */;
-			productName = KeychainSwift;
-		};
 		53272534268BF9710035FBF1 /* SwiftUIFocusGuide */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 53272533268BF9710035FBF1 /* XCRemoteSwiftPackageReference "SwiftUIFocusGuide" */;
