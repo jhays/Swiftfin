@@ -90,7 +90,6 @@
 		536D3D7F267BDF100004248C /* LatestMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536D3D7E267BDF100004248C /* LatestMediaView.swift */; };
 		536D3D81267BDFC60004248C /* PortraitItemElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536D3D80267BDFC60004248C /* PortraitItemElement.swift */; };
 		536D3D84267BEA550004248C /* ParallaxView in Frameworks */ = {isa = PBXBuildFile; productRef = 536D3D83267BEA550004248C /* ParallaxView */; };
-		536D3D88267C17350004248C /* PublicUserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536D3D87267C17350004248C /* PublicUserButton.swift */; };
 		5377CBF5263B596A003A4E83 /* JellyfinPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5377CBF4263B596A003A4E83 /* JellyfinPlayerApp.swift */; };
 		5377CBF9263B596B003A4E83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5377CBF8263B596B003A4E83 /* Assets.xcassets */; };
 		5377CBFC263B596B003A4E83 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5377CBFB263B596B003A4E83 /* Preview Assets.xcassets */; };
@@ -319,7 +318,6 @@
 		536D3D75267BA9BB0004248C /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
 		536D3D7E267BDF100004248C /* LatestMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestMediaView.swift; sourceTree = "<group>"; };
 		536D3D80267BDFC60004248C /* PortraitItemElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortraitItemElement.swift; sourceTree = "<group>"; };
-		536D3D87267C17350004248C /* PublicUserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicUserButton.swift; sourceTree = "<group>"; };
 		5377CBF1263B596A003A4E83 /* Jellyfin iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jellyfin iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5377CBF4263B596A003A4E83 /* JellyfinPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JellyfinPlayerApp.swift; sourceTree = "<group>"; };
 		5377CBF8263B596B003A4E83 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -607,7 +605,6 @@
 			children = (
 				531690F6267ACC00005D8AB9 /* LandscapeItemElement.swift */,
 				536D3D80267BDFC60004248C /* PortraitItemElement.swift */,
-				536D3D87267C17350004248C /* PublicUserButton.swift */,
 				53116A18268B947A003024C9 /* PlainLinkButton.swift */,
 				53272531268BF09D0035FBF1 /* MediaViewActionButton.swift */,
 			);
@@ -1115,7 +1112,6 @@
 				62E632DE267D2E170063E547 /* LatestMediaViewModel.swift in Sources */,
 				09029686269677B60075B1FC /* ServerCardView.swift in Sources */,
 				53116A19268B947A003024C9 /* PlainLinkButton.swift in Sources */,
-				536D3D88267C17350004248C /* PublicUserButton.swift in Sources */,
 				62E632EA267D3FF50063E547 /* SeasonItemViewModel.swift in Sources */,
 				53CD2A40268A49C2002ABD4E /* ItemView.swift in Sources */,
 				53CD2A42268A4B38002ABD4E /* MovieItemView.swift in Sources */,
@@ -1289,6 +1285,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.tvos.TopShelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1313,6 +1310,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byatt.jellyfin.tvos.TopShelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
