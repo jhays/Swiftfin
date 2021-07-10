@@ -23,7 +23,7 @@ final class SessionManager {
         let savedUserRequest: NSFetchRequest<SignedInUser> = SignedInUser.fetchRequest()
 
         let savedUsers = try? PersistenceController.shared.container.viewContext.fetch(savedUserRequest)
-        
+
         #if os(tvOS)
         savedUsers?.forEach { savedUser in
             if savedUser.appletv_id == tvUserManager.currentUserIdentifier ?? "" {
