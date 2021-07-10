@@ -11,8 +11,8 @@ final class ServerEnvironment {
         let serverRequest: NSFetchRequest<Server> = Server.fetchRequest()
         let servers = try? PersistenceController.shared.container.viewContext.fetch(serverRequest)
 
-        if servers?.count != 0 {
-            server = servers?.first
+        if let servers = servers, servers.count != 0 {
+            server = servers.first
             JellyfinAPI.basePath = server.baseURI!
         }
     }

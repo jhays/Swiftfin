@@ -21,9 +21,15 @@ struct PersistenceController {
     let container: NSPersistentCloudKitContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Model")
-        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: FileManager.default
-                                                                                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.byatt.jellyfin")!.appendingPathComponent("\(container.name).sqlite"))]
+        container = NSPersistentCloudKitContainer(name: "Jellyfin")
+        
+        guard var url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.byatt.jellyfin") else { fatalError("Can not get url forSecurityApplicationGroupIdentifier")}
+        #if os(tvOS)
+        url.appendPathComponent("Library/Caches")
+        #endif
+        url.appendPathComponent("\(container.name).sqlite")
+        
+        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: url)]
 
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")

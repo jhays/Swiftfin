@@ -1,58 +1,77 @@
 import Combine
 import TVServices
 import JellyfinAPI
+import CoreData
+
 
 class ContentProvider: TVTopShelfContentProvider {
-
+    
     
     func getResumeWatching(completion: @escaping ([BaseItemDto]?) -> ()) {
         
-        let server = ServerEnvironment.current.server
-        let savedUser = SessionManager.current.user
-        var cancellables = Set<AnyCancellable>()
-        var resumeItems = [BaseItemDto]()
-        if let userID = savedUser?.user_id {
-            ItemsAPI.getResumeItems(userId: userID, limit: 5,
-                                    fields: [.primaryImageAspectRatio, .seriesPrimaryImage, .seasonUserData, .overview, .genres, .people],
-                                    mediaTypes: ["Video"], imageTypeLimit: 1, enableImageTypes: [.primary, .backdrop, .thumb])
-                .sink(receiveCompletion: { completion in
-                }, receiveValue: { response in
-                    completion(response.items)
-                })
-                .store(in: &cancellables)
+        guard let _ = ServerEnvironment.current.server,
+              let savedUser = SessionManager.current.user,
+              let userID = savedUser.user_id else {
+            completion(nil)
+            return
         }
+        print("Fetching continue watching")
+        var cancellables = Set<AnyCancellable>()
+        
+        ItemsAPI.getResumeItems(userId: userID, limit: 5,
+                                fields: [.primaryImageAspectRatio, .seriesPrimaryImage],
+                                mediaTypes: ["Video"], imageTypeLimit: 1, enableImageTypes: [.primary, .backdrop, .thumb])
+            .subscribe(on: DispatchQueue.global(qos: .background))
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .finished:
+                    break
+                case .failure(_):
+                    completion(nil)
+                    break
+                }
+            }, receiveValue: { response in
+                DispatchGroup().notify(queue: .main) {
+                    completion(response.items)
+                }
+            })
+            .store(in: &cancellables)
+        
         
     }
- 
+    
     override func loadTopShelfContent(completionHandler: @escaping (TVTopShelfContent?) -> Void) {
         // Fetch content and call completionHandler
         var contentItems = [TVTopShelfSectionedItem]()
         
         getResumeWatching { items in
-            if let items = items {
-                print("Has item")
-                print(items)
-                for item in items {
-                    let itemContent = TVTopShelfSectionedItem(identifier: item.id!)
-                    itemContent.imageShape = .poster
-                    itemContent.title = item.name
-                    itemContent.setImageURL(item.getPrimaryImage(maxWidth: 200), for: .screenScale1x)
-                    contentItems.append(itemContent)
-                }
-            }
-            else{
+            
+            guard let items = items else {
                 completionHandler(nil)
+                return
+            }
+            for item in items {
+                let imageUrl = item.type == "Episode" ? item.getSeriesPrimaryImage(maxWidth: 600) : item.getPrimaryImage(maxWidth: 600)
+                let name = item.type == "Episode" ? "\(item.getEpisodeLocator()) - \(item.name!) - \(item.seriesName!)" : item.name
+
+                let itemContent = TVTopShelfSectionedItem(identifier: item.id!)
+                itemContent.imageShape = .poster
+                itemContent.title = name
+                itemContent.playbackProgress = (item.userData?.playedPercentage ?? 0) / 100
+                itemContent.setImageURL(imageUrl, for: .screenScale2x)
+                
+                contentItems.append(itemContent)
             }
             
-        }
-
-        let collection = TVTopShelfItemCollection(items: contentItems)
-        collection.title = "Continue Watching"
-        let content = TVTopShelfSectionedContent(sections: [collection])
-        
-        completionHandler(content)
+            let collection = TVTopShelfItemCollection(items: contentItems)
+            collection.title = "Continue Watching"
+            
+            let content = TVTopShelfSectionedContent(sections: [collection])
       
 
+            completionHandler(content)
+            
+        }
     }
-
+    
 }

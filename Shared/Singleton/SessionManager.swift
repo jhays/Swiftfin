@@ -23,7 +23,7 @@ final class SessionManager {
         let savedUserRequest: NSFetchRequest<SignedInUser> = SignedInUser.fetchRequest()
 
         let savedUsers = try? PersistenceController.shared.container.viewContext.fetch(savedUserRequest)
-
+        
         #if os(tvOS)
         savedUsers?.forEach { savedUser in
             if savedUser.appletv_id == tvUserManager.currentUserIdentifier ?? "" {
@@ -76,13 +76,12 @@ final class SessionManager {
             header.append("Token=\"\(authToken!)\"")
             accessToken = authToken!
         }
-
         JellyfinAPI.customHeaders["X-Emby-Authorization"] = header
     }
 
     fileprivate func getAuthToken(userID: String) -> String? {
         let keychain = KeychainSwift()
-        keychain.accessGroup = "com.byatt.jellyfin.sharedKeychain"
+        keychain.accessGroup = "U3ZPB6U89W.com.byatt.jellyfin.sharedKeychain"
         return keychain.get("AccessToken_\(userID)")
     }
 
@@ -127,7 +126,7 @@ final class SessionManager {
                 user.device_uuid = self.deviceID
 
                 #if os(tvOS)
-                // user.appletv_id = tvUserManager.currentUserIdentifier ?? ""
+                user.appletv_id = self.tvUserManager.currentUserIdentifier ?? ""
                 #endif
 
                 return (user, response.accessToken)
@@ -137,9 +136,8 @@ final class SessionManager {
                 _ = try? PersistenceController.shared.container.viewContext.save()
 
                 let keychain = KeychainSwift()
-                keychain.accessGroup = "com.byatt.jellyfin.sharedKeychain"
+                keychain.accessGroup = "U3ZPB6U89W.com.byatt.jellyfin.sharedKeychain"
                 keychain.set(accessToken!, forKey: "AccessToken_\(user.user_id!)")
-
                 generateAuthHeader(with: accessToken, deviceID: user.device_uuid)
 
                 let nc = NotificationCenter.default
@@ -154,7 +152,7 @@ final class SessionManager {
         nc.post(name: Notification.Name("didSignOut"), object: nil)
         dump(user)
         let keychain = KeychainSwift()
-        keychain.accessGroup = "com.byatt.jellyfin.sharedKeychain"
+        keychain.accessGroup = "U3ZPB6U89W.com.byatt.jellyfin.sharedKeychain"
         keychain.delete("AccessToken_\(user?.user_id ?? "")")
         generateAuthHeader(with: nil, deviceID: nil)
         if user != nil {

@@ -75,7 +75,7 @@ struct ServerUserListView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 VStack {
-                    Text("Whos Watching?")
+                    Text("Who's Watching?")
                         .font(.title)
                         .padding(.bottom, 30)
                     HStack {
