@@ -16,6 +16,15 @@
 		090296892696C32A0075B1FC /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090296872696C32A0075B1FC /* ColorExtensions.swift */; };
 		09029690269957300075B1FC /* TVServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53ABFDDB267972BF00886593 /* TVServices.framework */; };
 		09029697269957300075B1FC /* TopShelf.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0902968F269957300075B1FC /* TopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0902969C269957690075B1FC /* ContentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0902969B269957690075B1FC /* ContentProvider.swift */; };
+		0902969D269957790075B1FC /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5377CBFF263B596B003A4E83 /* Model.xcdatamodeld */; };
+		0902969E2699577F0075B1FC /* ServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EC352B26766675000E9F2D /* ServerEnvironment.swift */; };
+		0902969F269957810075B1FC /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EC352E267666A5000E9F2D /* SessionManager.swift */; };
+		090296A0269957950075B1FC /* APIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5364F454266CA0DC0026ECBA /* APIExtensions.swift */; };
+		090296A2269958190075B1FC /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5358706B2669D21700D05A09 /* PersistenceController.swift */; };
+		090296A3269958490075B1FC /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621338922660107500A81A2A /* StringExtensions.swift */; };
+		090296A5269958810075B1FC /* JellyfinAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 090296A4269958810075B1FC /* JellyfinAPI */; };
+		090296A7269958940075B1FC /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 090296A6269958940075B1FC /* KeychainSwift */; };
 		091B5A8A2683142E00D78B61 /* ServerDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091B5A872683142E00D78B61 /* ServerDiscovery.swift */; };
 		091B5A8B2683142E00D78B61 /* UDPBroadCastConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091B5A882683142E00D78B61 /* UDPBroadCastConnection.swift */; };
 		091B5A8D268315D400D78B61 /* ServerDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091B5A872683142E00D78B61 /* ServerDiscovery.swift */; };
@@ -246,6 +255,8 @@
 		090296872696C32A0075B1FC /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		0902968F269957300075B1FC /* TopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		09029694269957300075B1FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0902969B269957690075B1FC /* ContentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProvider.swift; sourceTree = "<group>"; };
+		090296A1269957A10075B1FC /* TopShelf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TopShelf.entitlements; sourceTree = "<group>"; };
 		091B5A872683142E00D78B61 /* ServerDiscovery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerDiscovery.swift; sourceTree = "<group>"; };
 		091B5A882683142E00D78B61 /* UDPBroadCastConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPBroadCastConnection.swift; sourceTree = "<group>"; };
 		09389CC626819B4500AE350E /* VideoPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerModel.swift; sourceTree = "<group>"; };
@@ -391,6 +402,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				090296A7269958940075B1FC /* KeychainSwift in Frameworks */,
+				090296A5269958810075B1FC /* JellyfinAPI in Frameworks */,
 				09029690269957300075B1FC /* TVServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,7 +485,9 @@
 		09029691269957300075B1FC /* TopShelf */ = {
 			isa = PBXGroup;
 			children = (
+				090296A1269957A10075B1FC /* TopShelf.entitlements */,
 				09029694269957300075B1FC /* Info.plist */,
+				0902969B269957690075B1FC /* ContentProvider.swift */,
 			);
 			path = TopShelf;
 			sourceTree = "<group>";
@@ -779,6 +794,10 @@
 			dependencies = (
 			);
 			name = TopShelf;
+			packageProductDependencies = (
+				090296A4269958810075B1FC /* JellyfinAPI */,
+				090296A6269958940075B1FC /* KeychainSwift */,
+			);
 			productName = TopShelf;
 			productReference = 0902968F269957300075B1FC /* TopShelf.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -883,6 +902,7 @@
 				TargetAttributes = {
 					0902968E269957300075B1FC = {
 						CreatedOnToolsVersion = 12.5;
+						LastSwiftMigration = 1250;
 					};
 					5358705F2669D21600D05A09 = {
 						CreatedOnToolsVersion = 12.5;
@@ -1070,6 +1090,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0902969C269957690075B1FC /* ContentProvider.swift in Sources */,
+				0902969D269957790075B1FC /* Model.xcdatamodeld in Sources */,
+				0902969F269957810075B1FC /* SessionManager.swift in Sources */,
+				090296A3269958490075B1FC /* StringExtensions.swift in Sources */,
+				090296A2269958190075B1FC /* PersistenceController.swift in Sources */,
+				090296A0269957950075B1FC /* APIExtensions.swift in Sources */,
+				0902969E2699577F0075B1FC /* ServerEnvironment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1254,6 +1281,8 @@
 		09029699269957300075B1FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TopShelf/TopShelf.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U3ZPB6U89W;
 				INFOPLIST_FILE = TopShelf/Info.plist;
@@ -1266,6 +1295,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 14.5;
@@ -1275,6 +1305,8 @@
 		0902969A269957300075B1FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = TopShelf/TopShelf.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U3ZPB6U89W;
 				INFOPLIST_FILE = TopShelf/Info.plist;
@@ -1297,6 +1329,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A8FCA2E6BACAF4EC4B93679B /* Pods-Jellyfin tvOS.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Jellyfin tvOS/JellyfintvOS.entitlements";
@@ -1325,6 +1358,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 131C6AFE2D2D241CB8517E17 /* Pods-Jellyfin tvOS.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Jellyfin tvOS/JellyfintvOS.entitlements";
@@ -1713,6 +1747,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		090296A4269958810075B1FC /* JellyfinAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 53A431BB266B0FF20016769F /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */;
+			productName = JellyfinAPI;
+		};
+		090296A6269958940075B1FC /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5338F755263B7E2E0014BF09 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
 		53272534268BF9710035FBF1 /* SwiftUIFocusGuide */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 53272533268BF9710035FBF1 /* XCRemoteSwiftPackageReference "SwiftUIFocusGuide" */;
