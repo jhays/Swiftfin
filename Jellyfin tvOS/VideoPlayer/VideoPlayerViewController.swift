@@ -14,8 +14,6 @@ enum NowPlayableInterruption {
     case began, ended(Bool), failed(Error)
 }
 
-
-
 class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, VLCMediaPlayerDelegate, VLCMediaDelegate, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var videoContentView: UIView!
@@ -64,11 +62,10 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
 //    var upNextViewModel: UpNextViewModel = UpNextViewModel()
     var playbackItem = PlaybackItem()
     var playSessionId: String = ""
-    
-    
+
     // The observer of audio session interruption notifications.
     private var interruptionObserver: NSObjectProtocol!
-    
+
     // The handler to be invoked when an interruption begins or ends.
     private var interruptionHandler: (NowPlayableInterruption) -> Void = { _ in }
 
@@ -365,7 +362,7 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
         }
 
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-        
+
         do {
             try handleNowPlayableSessionStart()
         } catch { error
@@ -555,11 +552,11 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
             mediaPlayer.stop()
             sendStopReport()
             MPNowPlayingInfoCenter.default().nowPlayingInfo = .none
-            
+
             handleNowPlayableSessionEnd()
 
             UIApplication.shared.endReceivingRemoteControlEvents()
-            
+
             self.navigationController?.popViewController(animated: true)
         }
     }
@@ -834,35 +831,34 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     func setupInfoPanel() {
         infoTabBarViewController?.setupInfoViews(mediaItem: manifest, subtitleTracks: subtitleTrackArray, selectedSubtitleTrack: selectedCaptionTrack, audioTracks: audioTrackArray, selectedAudioTrack: selectedAudioTrack, delegate: self)
     }
-    
-    
+
     func handleNowPlayableSessionStart() throws {
-        
+
         let audioSession = AVAudioSession.sharedInstance()
-        
+
         // Observe interruptions to the audio session.
-        
+
         interruptionObserver = NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification,
                                                                       object: audioSession,
                                                                       queue: .main) {
             [unowned self] notification in
             self.handleAudioSessionInterruption(notification: notification)
         }
-        
+
         // Make the audio session active.
-        
+
         try audioSession.setCategory(.playback, mode: .default)
         try audioSession.setActive(true)
     }
 
     func handleNowPlayableSessionEnd() {
-        
+
         // Stop observing interruptions to the audio session.
-        
+
         interruptionObserver = nil
-        
+
         // Make the audio session inactive.
-        
+
         do {
             try AVAudioSession.sharedInstance().setActive(false)
         } catch {
@@ -871,49 +867,49 @@ class VideoPlayerViewController: UIViewController, VideoPlayerSettingsDelegate, 
     }
 
     func handleAudioSessionInterruption(notification: Notification) {
-        
+
         // Retrieve the interruption type from the notification.
-        
+
         guard let userInfo = notification.userInfo,
             let interruptionTypeUInt = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
             let interruptionType = AVAudioSession.InterruptionType(rawValue: interruptionTypeUInt) else { return }
-        
+
         // Begin or end an interruption.
-        
+
         switch interruptionType {
-            
+
         case .began:
-            
+
             // When an interruption begins, just invoke the handler.
-            
+
             interruptionHandler(.began)
-            
+
         case .ended:
-            
+
             // When an interruption ends, determine whether playback should resume
             // automatically, and reactivate the audio session if necessary.
-            
+
             do {
-                
+
                 try AVAudioSession.sharedInstance().setActive(true)
-                
+
                 var shouldResume = false
-                
+
                 if let optionsUInt = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt,
                     AVAudioSession.InterruptionOptions(rawValue: optionsUInt).contains(.shouldResume) {
                     shouldResume = true
                 }
-                
+
                 interruptionHandler(.ended(shouldResume))
             }
-                
+
             // When the audio session cannot be resumed after an interruption,
             // invoke the handler with error information.
-            
+
             catch {
                 interruptionHandler(.failed(error))
             }
-            
+
         @unknown default:
             break
         }
