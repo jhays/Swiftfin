@@ -32,18 +32,24 @@ struct LatestMediaView: View {
 
     var body: some View {
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack {
+                LazyHStack() {
                     Spacer().frame(width: 45)
                     ForEach(items, id: \.id) { item in
                         if item.type == "Series" || item.type == "Movie" {
-                            NavigationLink(destination: LazyView { ItemView(item: item) }) {
-                                PortraitItemElement(item: item)
-                            }.buttonStyle(PlainNavigationLinkButtonStyle())
+                            VStack {
+                                NavigationLink(destination: LazyView { ItemView(item: item) }) {
+                                    PortraitItemElement(item: item)
+                                }.buttonStyle(CardButtonStyle())
+                                Text(item.name ?? "")
+                                    .frame(width: 200)
+                                    .lineLimit(1)
+
+                            }
                         }
                     }
                     Spacer().frame(width: 45)
                 }
-            }.frame(height: 350)
+            }.frame(height: 400)
             .onAppear(perform: onAppear)
     }
 }
