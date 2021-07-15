@@ -6,12 +6,14 @@ import JellyfinAPI
 
 protocol HomeViewDelegate: AnyObject {
     func showItemView(for item: BaseItemDto)
+    func loading(_ val: Bool)
 }
 
 struct HomeView: UIViewControllerRepresentable {
-    //    @StateObject var viewModel = HomeViewModel()
+//        @StateObject var viewModel = HomeViewModel()
     @Binding var itemToShow: BaseItemDto
     @Binding var showItemView: Bool
+    @Binding var loading: Bool
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<HomeView>) -> HomeTableViewController {
         
@@ -25,21 +27,27 @@ struct HomeView: UIViewControllerRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(itemToShow: self.$itemToShow, showItemView: self.$showItemView)
+        Coordinator(itemToShow: self.$itemToShow, showItemView: self.$showItemView, loading: self.$loading)
     }
     
     class Coordinator: NSObject, HomeViewDelegate {
         let itemToShow: Binding<BaseItemDto>
         let showItemView: Binding<Bool>
-        
-        init(itemToShow: Binding<BaseItemDto>, showItemView: Binding<Bool>) {
+        let loading: Binding<Bool>
+
+        init(itemToShow: Binding<BaseItemDto>, showItemView: Binding<Bool>, loading: Binding<Bool>) {
             self.itemToShow = itemToShow
             self.showItemView = showItemView
+            self.loading = loading
         }
         
         func showItemView(for item: BaseItemDto) {
             itemToShow.wrappedValue = item
             showItemView.wrappedValue = true
+        }
+        
+        func loading(_ val: Bool) {
+            self.loading.wrappedValue = val
         }
     }
     

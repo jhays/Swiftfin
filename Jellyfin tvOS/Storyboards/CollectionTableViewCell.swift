@@ -41,7 +41,7 @@ class CollectionTableViewCell: UITableViewCell, UICollectionViewDelegate, UIColl
     
     var layout = HorizontalStickyHeaderLayout()
     
-    var items: [BaseItemDto] = []
+    var section: PosterCollectionSection = PosterCollectionSection()
     
     static func nib()-> UINib {
         return UINib(nibName: "CollectionTableViewCell", bundle: nil)
@@ -73,25 +73,21 @@ class CollectionTableViewCell: UITableViewCell, UICollectionViewDelegate, UIColl
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        items.count
+        self.section.items.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PosterCollectionViewCell
         
         // Configure the cell
-        let item = items[indexPath.row]
+        let item = self.section.items[indexPath.row]
         cell.setup(item: item)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as? HeaderView{
-            print(sectionHeader.label)
-            if let label = sectionHeader.label
-            {
-                label.text = "Section Header"
-            }
+            sectionHeader.label!.text = section.title
             return sectionHeader
         }
         return UICollectionReusableView()
@@ -100,12 +96,9 @@ class CollectionTableViewCell: UITableViewCell, UICollectionViewDelegate, UIColl
         return UIEdgeInsets(top: 0, left: -200, bottom: 0, right: 0)
     }
     
-  
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = items[indexPath.row]
+        let item = self.section.items[indexPath.row]
         delegate?.showItemView(for: item)
     }
     
@@ -116,8 +109,8 @@ class CollectionTableViewCell: UITableViewCell, UICollectionViewDelegate, UIColl
     
     
     
-    func configure(with items: [BaseItemDto]) {
-        self.items = items
+    func configure(with section: PosterCollectionSection) {
+        self.section = section
         self.collectionView.reloadData()
     }
     
@@ -157,7 +150,8 @@ extension CollectionTableViewCell: HorizontalStickyHeaderLayoutDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, hshlSizeForHeaderAtSection section: Int) -> CGSize {
-        return CGSize(width: 200, height: 20)
+        let size = self.section.title.size(withAttributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 38, weight: .bold)])
+        return CGSize(width: size.width, height: 20)
     }
 
     // Spacing
@@ -167,7 +161,7 @@ extension CollectionTableViewCell: HorizontalStickyHeaderLayoutDelegate {
 
     // Insets
     func collectionView(_ collectionView: UICollectionView, hshlHeaderInsetsAtSection section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
+        return UIEdgeInsets(top: 20, left: 10, bottom: 5, right: 10)
     }
 
     func collectionView(_ collectionView: UICollectionView, hshlSectionInsetsAtSection section: Int) -> UIEdgeInsets {
