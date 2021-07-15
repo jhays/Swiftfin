@@ -13,12 +13,7 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack {
-            NavigationLink(
-                destination: ItemView(item: itemToShow),
-                isActive: $showItemView,
-                label: {
-                    EmptyView()
-                })
+          
 //            if viewModel.lastBackgroundURL != nil {
 //                ImageView(src: viewModel.lastBackgroundURL!, bh: viewModel.backgroundBlurHash)
 //                    .frame(minWidth: 100, maxWidth: .infinity, minHeight: 100, maxHeight: .infinity)
@@ -52,6 +47,15 @@ struct MainTabView: View {
                 }
                 .tag(Tab.allMedia)
             }
+            .background(
+                NavigationLink(
+                    destination: ItemView(item: itemToShow),
+                    isActive: $showItemView,
+                    label: {
+                        EmptyView()
+                    })
+                    .opacity(0)
+            )
         }
     }
 }

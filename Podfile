@@ -8,4 +8,5 @@ target 'Jellyfin tvOS' do
   platform :tvos, '14.0'
   use_frameworks!
   pod 'TVVLCKit'
+  pod "HorizontalStickyHeaderLayout"
 end

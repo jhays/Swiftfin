@@ -7,6 +7,7 @@
 
 import UIKit
 import JellyfinAPI
+import Combine
 
 private let reuseIdentifier = "Cell"
 
@@ -14,6 +15,18 @@ class PosterCollectionViewController: UICollectionViewController {
     
     var items: [BaseItemDto] = []
     weak var delegate: HomeViewDelegate?
+    var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.itemSize = CGSize(width: 300, height: 500)
+        flowLayout.scrollDirection = .horizontal
+        super.init(collectionViewLayout: flowLayout)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +37,32 @@ class PosterCollectionViewController: UICollectionViewController {
         // Register cell classes
         self.collectionView!.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
+        ItemsAPI.getResumeItems(userId: SessionManager.current.user.user_id!, limit: 12,
+                                fields: [.primaryImageAspectRatio, .seriesPrimaryImage, .seasonUserData, .overview, .genres, .people],
+                                mediaTypes: ["Video"], imageTypeLimit: 1, enableImageTypes: [.primary, .backdrop, .thumb])
+            .sink(receiveCompletion: { completion in
+            }, receiveValue: { response in
+                self.items.append(contentsOf: response.items ?? [])
+                TvShowsAPI.getNextUp(userId: SessionManager.current.user.user_id!, limit: 12,
+                                     fields: [.primaryImageAspectRatio, .seriesPrimaryImage, .seasonUserData, .overview, .genres, .people])
+                    .sink(receiveCompletion: { completion in
+                    }, receiveValue: { response in
+                        self.items.append(contentsOf: response.items ?? [])
+                        self.collectionView.reloadData()
+                    })
+                    .store(in: &self.cancellables)
+
+            })
+            .store(in: &cancellables)
+        
+      
+        
         // Do any additional setup after loading the view.
+    }
+    
+    func updateItems(_ items: [BaseItemDto]) {
+        self.items = items
+        self.collectionView.reloadData()
     }
 
     /*

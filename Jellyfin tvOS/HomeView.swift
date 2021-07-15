@@ -9,55 +9,25 @@ protocol HomeViewDelegate: AnyObject {
 }
 
 struct HomeView: UIViewControllerRepresentable {
-    @StateObject var viewModel = HomeViewModel()
+    //    @StateObject var viewModel = HomeViewModel()
     @Binding var itemToShow: BaseItemDto
     @Binding var showItemView: Bool
-
-//    func makeUIViewController(context: Context) -> HomeViewController {
-//
-//        let storyboard = UIStoryboard(name: "HomeView", bundle: nil)
-//        let viewController = storyboard.instantiateViewController(withIdentifier: "HomeView") as! HomeViewController
-//        viewController.items = viewModel.libraries
-//        print("setting up homeview controller")
-//        return viewController
-//    }
-//
-//    func updateUIViewController(_ uiViewController: HomeViewController, context: Context) {
-//        uiViewController.update(items: viewModel.nextUpItems)
-//        print("updating homeview controller")
-//        uiViewController.posterCollectionVC.collectionView.reloadData()
-//
-//    }
     
-    func makeUIViewController(context: UIViewControllerRepresentableContext<HomeView>) -> PosterCollectionViewController {
-
-        let storyboard = UIStoryboard(name: "HomeView", bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: "postercollection") as! PosterCollectionViewController
-        print("setting up homeview controller")
-        viewController.delegate = context.coordinator
-       
-        return viewController
+    func makeUIViewController(context: UIViewControllerRepresentableContext<HomeView>) -> HomeTableViewController {
+        
+        let vc = HomeTableViewController()
+        vc.delegate = context.coordinator
+        return vc
     }
-
-    func updateUIViewController(_ uiViewController: PosterCollectionViewController, context: UIViewControllerRepresentableContext<HomeView>) {
-        if uiViewController.items.isEmpty && !viewModel.nextUpItems.isEmpty {
-            uiViewController.items = viewModel.nextUpItems
-            let width = 1920*3
-            let size = uiViewController.collectionView.contentSize
-            uiViewController.collectionView.contentSize = CGSize(width: CGFloat(width), height: size.height)
-            print(uiViewController.preferredContentSize)
-            print(uiViewController.collectionView.contentSize)
-            print(uiViewController.view.frame)
-            uiViewController.collectionView.reloadData()
-            print("updating homeview controller")
-        }
-
+    
+    func updateUIViewController(_ uiViewController: HomeTableViewController, context: UIViewControllerRepresentableContext<HomeView>) {
+        
     }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(itemToShow: self.$itemToShow, showItemView: self.$showItemView)
-       }
-
+    }
+    
     class Coordinator: NSObject, HomeViewDelegate {
         let itemToShow: Binding<BaseItemDto>
         let showItemView: Binding<Bool>
@@ -71,7 +41,7 @@ struct HomeView: UIViewControllerRepresentable {
             itemToShow.wrappedValue = item
             showItemView.wrappedValue = true
         }
-       }
+    }
     
     func showItemView(for item: BaseItemDto) {
         itemToShow = item
