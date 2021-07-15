@@ -27,11 +27,24 @@ struct MainTabView: View {
                     }
                     .tag(Tab.home)
                 
-                Text("Library")
+                Text("Movies")
                     .tabItem {
-                        Text(Tab.allMedia.localized)
+                        Text(Tab.movies.localized)
                     }
-                    .tag(Tab.allMedia)
+                    .tag(Tab.movies)
+                
+                Text("TV Shows")
+                    .tabItem {
+                        Text(Tab.tv_shows.localized)
+                    }
+                    .tag(Tab.tv_shows)
+                
+                Text("Search")
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    .tag(Tab.search)
+                
             }
             .background(
                 NavigationLink(
@@ -49,14 +62,20 @@ struct MainTabView: View {
 extension MainTabView {
     enum Tab: String {
         case home
-        case allMedia
+        case movies
+        case tv_shows
+        case search
         
         var localized: String {
             switch self {
             case .home:
                 return "Home"
-            case .allMedia:
-                return "All Media"
+            case .movies:
+                return "Movies"
+            case .tv_shows:
+                return "TV Shows"
+            case .search:
+                return "Search"
             }
         }
     }

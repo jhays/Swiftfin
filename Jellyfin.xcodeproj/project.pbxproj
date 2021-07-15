@@ -37,7 +37,6 @@
 		09389CC726819B4600AE350E /* VideoPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09389CC626819B4500AE350E /* VideoPlayerModel.swift */; };
 		09389CC826819B4600AE350E /* VideoPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09389CC626819B4500AE350E /* VideoPlayerModel.swift */; };
 		093EE49C269FD02C005F2ED1 /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 093EE49B269FD02B005F2ED1 /* HeaderView.xib */; };
-		093EE49E269FD163005F2ED1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 093EE49D269FD163005F2ED1 /* Main.storyboard */; };
 		0959A5FD2686D29800C7C9A9 /* VideoUpNextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959A5FC2686D29800C7C9A9 /* VideoUpNextView.swift */; };
 		095EEF5F269C2B1A0040263E /* HomeView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 095EEF5E269C2B1A0040263E /* HomeView.storyboard */; };
 		09C8C12B269E6953009B0485 /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C8C12A269E6953009B0485 /* HomeTableViewController.swift */; };
@@ -272,7 +271,6 @@
 		092C15FB269D4C1A007ADCB0 /* PosterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterCollectionViewCell.swift; sourceTree = "<group>"; };
 		09389CC626819B4500AE350E /* VideoPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerModel.swift; sourceTree = "<group>"; };
 		093EE49B269FD02B005F2ED1 /* HeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
-		093EE49D269FD163005F2ED1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		0959A5FC2686D29800C7C9A9 /* VideoUpNextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoUpNextView.swift; sourceTree = "<group>"; };
 		095EEF5E269C2B1A0040263E /* HomeView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HomeView.storyboard; sourceTree = "<group>"; };
 		09C8C12A269E6953009B0485 /* HomeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
@@ -533,7 +531,6 @@
 				092C15F9269D4A4F007ADCB0 /* PosterCollectionViewController.swift */,
 				09C8C12E269EAE87009B0485 /* CollectionTableViewCell.swift */,
 				093EE49B269FD02B005F2ED1 /* HeaderView.xib */,
-				093EE49D269FD163005F2ED1 /* Main.storyboard */,
 				09C8C12F269EAE87009B0485 /* CollectionTableViewCell.xib */,
 			);
 			path = Storyboards;
@@ -1000,7 +997,6 @@
 				095EEF5F269C2B1A0040263E /* HomeView.storyboard in Resources */,
 				09C8C131269EAE87009B0485 /* CollectionTableViewCell.xib in Resources */,
 				5310695D2684E7EE00CFFDBA /* VideoPlayer.storyboard in Resources */,
-				093EE49E269FD163005F2ED1 /* Main.storyboard in Resources */,
 				5358706A2669D21700D05A09 /* Preview Assets.xcassets in Resources */,
 				535870672669D21700D05A09 /* Assets.xcassets in Resources */,
 				5358707E2669D64F00D05A09 /* bitrates.json in Resources */,

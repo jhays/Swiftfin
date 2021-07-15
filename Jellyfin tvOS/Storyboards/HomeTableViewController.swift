@@ -38,6 +38,9 @@ class HomeTableViewController: UITableViewController {
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         
+        
+        /// TODO : Clean this up
+        delegate?.loading(true)
         ItemsAPI.getResumeItems(userId: SessionManager.current.user.user_id!, limit: 12,
                                 fields: [.primaryImageAspectRatio, .seriesPrimaryImage, .seasonUserData, .overview, .genres, .people],
                                 mediaTypes: ["Video"], imageTypeLimit: 1, enableImageTypes: [.primary, .backdrop, .thumb])
