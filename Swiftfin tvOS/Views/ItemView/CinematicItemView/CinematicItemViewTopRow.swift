@@ -10,7 +10,7 @@
 import SwiftUI
 
 struct CinematicItemViewTopRow: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: ItemViewModel
     @Environment(\.isFocused) var envFocused: Bool
@@ -19,7 +19,7 @@ struct CinematicItemViewTopRow: View {
     @State var title: String
     @State var subtitle: String?
     let showDetails: Bool
-    
+
     init(viewModel: ItemViewModel,
          wrappedScrollView: UIScrollView? = nil,
          title: String,
@@ -31,7 +31,7 @@ struct CinematicItemViewTopRow: View {
         self.subtitle = subtitle
         self.showDetails = showDetails
     }
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.8), .black]),
@@ -39,14 +39,14 @@ struct CinematicItemViewTopRow: View {
                            endPoint: .bottom)
                 .ignoresSafeArea()
                 .frame(height: 210)
-            
+
             VStack {
                 Spacer()
-                
+
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading) {
                         HStack(alignment: .PlayInformationAlignmentGuide) {
-                            
+
                             // MARK: Play
                             Button {
                                 if let itemVideoPlayerViewModel = viewModel.itemVideoPlayerViewModel {
@@ -70,18 +70,18 @@ struct CinematicItemViewTopRow: View {
                             .buttonStyle(CardButtonStyle())
                         }
                     }
-                    
+
                     VStack(alignment: .leading, spacing: 5) {
                         Text(title)
                             .font(.title2)
                             .lineLimit(2)
-                        
+
                         if let subtitle = subtitle {
                             Text(subtitle)
                         }
-                        
+
                         HStack(alignment: .PlayInformationAlignmentGuide, spacing: 20) {
-                            
+
                             if showDetails {
                                 if viewModel.item.itemType == .series {
                                     if let airTime = viewModel.item.airTime {
@@ -95,7 +95,7 @@ struct CinematicItemViewTopRow: View {
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                     }
-                                    
+
                                     if let productionYear = viewModel.item.productionYear {
                                         Text(String(productionYear))
                                             .font(.subheadline)
@@ -103,7 +103,7 @@ struct CinematicItemViewTopRow: View {
                                             .lineLimit(1)
                                     }
                                 }
-                                
+
                                 if let officialRating = viewModel.item.officialRating {
                                     Text(officialRating)
                                         .font(.subheadline)
@@ -119,13 +119,13 @@ struct CinematicItemViewTopRow: View {
                         }
                         .foregroundColor(.secondary)
                     }
-                    
+
                     Spacer()
                 }
                 .padding(.horizontal, 50)
                 .padding(.bottom, 50)
             }
-            
+
         }
         .onChange(of: envFocused) { envFocus in
             if envFocus == true {
@@ -143,12 +143,12 @@ struct CinematicItemViewTopRow: View {
 }
 
 extension VerticalAlignment {
-    
+
     private struct PlayInformationAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> CGFloat {
             context[VerticalAlignment.bottom]
         }
     }
-    
+
     static let PlayInformationAlignmentGuide = VerticalAlignment(PlayInformationAlignment.self)
 }

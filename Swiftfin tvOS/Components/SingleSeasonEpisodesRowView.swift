@@ -11,26 +11,26 @@ import JellyfinAPI
 import SwiftUI
 
 struct SingleSeasonEpisodesRowView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: SingleSeasonEpisodesRowViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading) {
-            
+
             Text("Episodes")
                 .font(.title3)
                 .padding(.horizontal, 50)
-            
+
             ScrollView(.horizontal) {
-                ScrollViewReader { reader in
+                ScrollViewReader { _ in
                     HStack(alignment: .top) {
                         if viewModel.isLoading {
                             VStack(alignment: .leading) {
 
                                 ZStack {
                                     Color.secondary.ignoresSafeArea()
-                                    
+
                                     ProgressView()
                                 }
                                     .mask(Rectangle().frame(width: 500, height: 280))
@@ -76,7 +76,7 @@ struct SingleSeasonEpisodesRowView: View {
                                 .frame(width: 500)
                                 .focusable()
                             } else {
-                                ForEach(viewModel.episodes, id:\.self) { episode in
+                                ForEach(viewModel.episodes, id: \.self) { episode in
                                     Button {
                                         itemRouter.route(to: \.item, episode)
                                     } label: {

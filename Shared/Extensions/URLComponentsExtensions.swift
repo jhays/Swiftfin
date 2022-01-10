@@ -10,7 +10,7 @@
 import Foundation
 
 extension URLComponents {
-    
+
     mutating func addQueryItem(name: String, value: String?) {
         if let _ = self.queryItems {
             self.queryItems?.append(URLQueryItem(name: name, value: value))

@@ -24,11 +24,11 @@ final class SettingsCoordinator: NavigationCoordinatable {
         let viewModel = ServerDetailViewModel(server: SessionManager.main.currentLogin.server)
         ServerDetailView(viewModel: viewModel)
     }
-    
+
     @ViewBuilder func makeOverlaySettings() -> some View {
         OverlaySettingsView()
     }
-    
+
     @ViewBuilder func makeExperimentalSettings() -> some View {
         ExperimentalSettingsView()
     }

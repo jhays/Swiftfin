@@ -18,12 +18,12 @@ struct NextUpView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            
+
             L10n.nextUp.text
                 .font(.title3)
                 .fontWeight(.semibold)
                 .padding(.leading, 50)
-            
+
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(items, id: \.id) { item in

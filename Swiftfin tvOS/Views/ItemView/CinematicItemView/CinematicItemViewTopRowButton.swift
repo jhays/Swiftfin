@@ -14,9 +14,9 @@ struct CinematicItemViewTopRowButton<Content: View>: View {
     @State var focused: Bool = false
     @State var wrappedScrollView: UIScrollView?
     var content: () -> Content
-    
+
     @FocusState private var buttonFocused: Bool
-    
+
     var body: some View {
         content()
             .focused($buttonFocused)
@@ -38,7 +38,7 @@ struct CinematicItemViewTopRowButton<Content: View>: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         wrappedScrollView?.scrollToTop()
                     }
-                    
+
                     withAnimation(.linear(duration: 0.15)) {
                         self.focused = newValue
                     }

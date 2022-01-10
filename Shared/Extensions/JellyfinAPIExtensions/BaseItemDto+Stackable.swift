@@ -16,7 +16,7 @@ extension BaseItemDto: PortraitImageStackable {
     public var portraitImageID: String {
         return id ?? "no id"
     }
-    
+
     public func imageURLContsructor(maxWidth: Int) -> URL {
         switch self.itemType {
         case .episode:
@@ -53,7 +53,7 @@ extension BaseItemDto: PortraitImageStackable {
         let initials = name.split(separator: " ").compactMap({ String($0).first })
         return String(initials)
     }
-    
+
     public var showTitle: Bool {
         switch self.itemType {
         case .episode, .series, .movie:

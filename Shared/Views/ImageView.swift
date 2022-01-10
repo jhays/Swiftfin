@@ -46,7 +46,7 @@ struct ImageView: View {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-            case .failure(_):
+            case .failure:
                 failureImage
             default:
                 // TODO: remove once placeholder hash image fixed

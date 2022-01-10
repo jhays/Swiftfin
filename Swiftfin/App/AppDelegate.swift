@@ -18,7 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         // Lazily initialize datastack
         _ = SwiftfinStore.dataStack
-        
+
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback)

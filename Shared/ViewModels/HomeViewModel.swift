@@ -57,12 +57,12 @@ final class HomeViewModel: ViewModel {
 
     @objc func refresh() {
         LogManager.shared.log.debug("Refresh called.")
-        
+
         refreshLibrariesLatest()
         refreshResumeItems()
         refreshNextUpItems()
     }
-    
+
     // MARK: Libraries Latest Items
     private func refreshLibrariesLatest() {
         UserViewsAPI.getUserViews(userId: SessionManager.main.currentLogin.user.id)
@@ -73,7 +73,7 @@ final class HomeViewModel: ViewModel {
                 case .failure:
                     self.libraries = []
                 }
-                
+
                 self.handleAPIRequestError(completion: completion)
             }, receiveValue: { response in
 
@@ -110,7 +110,7 @@ final class HomeViewModel: ViewModel {
             })
             .store(in: &cancellables)
     }
-    
+
     // MARK: Resume Items
     private func refreshResumeItems() {
         ItemsAPI.getResumeItems(userId: SessionManager.main.currentLogin.user.id, limit: 12,
@@ -133,7 +133,7 @@ final class HomeViewModel: ViewModel {
             })
             .store(in: &cancellables)
     }
-    
+
     // MARK: Next Up Items
     private func refreshNextUpItems() {
         TvShowsAPI.getNextUp(userId: SessionManager.main.currentLogin.user.id, limit: 12,

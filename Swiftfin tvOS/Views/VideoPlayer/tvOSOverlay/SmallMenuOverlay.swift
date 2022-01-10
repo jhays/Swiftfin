@@ -12,22 +12,22 @@ import SwiftUI
 
 // TODO: Needs replacement/reworking
 struct SmallMediaStreamSelectionView: View {
-    
+
     enum Layer: Hashable {
         case subtitles
         case audio
         case playbackSpeed
     }
-    
+
     enum MediaSection: Hashable {
         case titles
         case items
     }
-    
+
     @ObservedObject var viewModel: VideoPlayerViewModel
-    
+
     @State private var updateFocusedLayer: Layer = .subtitles
-    
+
     @FocusState private var subtitlesFocused: Bool
     @FocusState private var audioFocused: Bool
     @FocusState private var playbackSpeedFocused: Bool
@@ -35,15 +35,15 @@ struct SmallMediaStreamSelectionView: View {
     @FocusState private var focusedLayer: Layer? {
         willSet {
             updateFocusedLayer = newValue!
-            
+
             if focusedSection == .titles {
                 lastFocusedLayer = newValue!
             }
         }
     }
-    
+
     @State private var lastFocusedLayer: Layer = .subtitles
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.8), .black]),
@@ -57,7 +57,7 @@ struct SmallMediaStreamSelectionView: View {
                 Spacer()
 
                 HStack {
-                    
+
                     // MARK: Subtitle Header
                     Button {
                         updateFocusedLayer = .subtitles
@@ -88,7 +88,7 @@ struct SmallMediaStreamSelectionView: View {
                             focusedLayer = .subtitles
                         }
                     }
-                    
+
                     // MARK: Audio Header
                     Button {
                         updateFocusedLayer = .audio
@@ -119,7 +119,7 @@ struct SmallMediaStreamSelectionView: View {
                             focusedLayer = .audio
                         }
                     }
-                    
+
                     // MARK: Playback Speed Header
                     Button {
                         updateFocusedLayer = .playbackSpeed
@@ -150,13 +150,13 @@ struct SmallMediaStreamSelectionView: View {
                             focusedLayer = .playbackSpeed
                         }
                     }
-                    
+
                     Spacer()
                 }
                 .padding()
                 .focusSection()
                 .focused($focusedSection, equals: .titles)
-                .onChange(of: focusedSection) { newSection in
+                .onChange(of: focusedSection) { _ in
                     if focusedSection == .titles {
                         if lastFocusedLayer == .subtitles {
                             subtitlesFocused = true
@@ -167,15 +167,15 @@ struct SmallMediaStreamSelectionView: View {
                         }
                     }
                 }
-                
+
                 if updateFocusedLayer == .subtitles && lastFocusedLayer == .subtitles {
                     // MARK: Subtitles
-                    
+
                     ScrollView(.horizontal) {
                         HStack {
                             if viewModel.subtitleStreams.isEmpty {
                                 Button {
-                                    
+
                                 } label: {
                                     Text("None")
                                 }
@@ -199,12 +199,12 @@ struct SmallMediaStreamSelectionView: View {
                     }
                 } else if updateFocusedLayer == .audio && lastFocusedLayer == .audio {
                     // MARK: Audio
-                    
+
                     ScrollView(.horizontal) {
                         HStack {
                             if viewModel.audioStreams.isEmpty {
                                 Button {
-                                    
+
                                 } label: {
                                     Text("None")
                                 }
@@ -228,7 +228,7 @@ struct SmallMediaStreamSelectionView: View {
                     }
                 } else if updateFocusedLayer == .playbackSpeed && lastFocusedLayer == .playbackSpeed {
                     // MARK: Rates
-                    
+
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(PlaybackSpeed.allCases, id: \.self) { playbackSpeed in

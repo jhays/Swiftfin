@@ -20,9 +20,9 @@ import MobileVLCKit
 #endif
 
 final class VideoPlayerViewModel: ViewModel {
-    
+
     // MARK: Published
-    
+
     // Manually kept state because VLCKit doesn't properly set "played"
     // on the VLCMediaPlayer object
     @Published var playerState: VLCMediaPlayerState = .buffering
@@ -38,7 +38,7 @@ final class VideoPlayerViewModel: ViewModel {
         }
     }
     @Published var selectedAudioStreamIndex: Int
-    @Published var selectedSubtitleStreamIndex: Int  {
+    @Published var selectedSubtitleStreamIndex: Int {
         didSet {
             if syncSubtitleStateWithAdjacent {
                 previousItemVideoPlayerViewModel?.matchSubtitleStream(with: self)
@@ -72,14 +72,14 @@ final class VideoPlayerViewModel: ViewModel {
             Defaults[.autoplayEnabled] = newValue
         }
     }
-    
+
     // MARK: ShouldShowItems
-    
+
     let shouldShowPlayPreviousItem: Bool
     let shouldShowPlayNextItem: Bool
     let shouldShowAutoPlay: Bool
     let shouldShowJumpButtonsInOverlayMenu: Bool
-    
+
     // MARK: General
     let item: BaseItemDto
     let title: String
@@ -91,52 +91,52 @@ final class VideoPlayerViewModel: ViewModel {
     let overlayType: OverlayType
     let jumpGesturesEnabled: Bool
     let resumeOffset: Bool
-    
+
     // MARK: Experimental
     let syncSubtitleStateWithAdjacent: Bool
-    
+
     // MARK: tvOS
     let confirmClose: Bool
-    
+
     // Full response kept for convenience
     let response: PlaybackInfoResponse
-    
-    var playerOverlayDelegate: PlayerOverlayDelegate?
-    
+
+    weak var playerOverlayDelegate: PlayerOverlayDelegate?
+
     // Ticks of the time the media began playing
     private var startTimeTicks: Int64 = 0
-    
+
     // MARK: Current Time
-    
+
     var currentSeconds: Double {
         let videoDuration = Double(item.runTimeTicks! / 10_000_000)
         return round(sliderPercentage * videoDuration)
     }
-    
+
     var currentSecondTicks: Int64 {
         return Int64(currentSeconds) * 10_000_000
     }
-    
+
     // MARK: Helpers
-    
+
     var currentAudioStream: MediaStream? {
         return audioStreams.first(where: { $0.index == selectedAudioStreamIndex })
     }
-    
+
     var currentSubtitleStream: MediaStream? {
         return subtitleStreams.first(where: { $0.index == selectedSubtitleStreamIndex })
     }
-    
+
     // Necessary PassthroughSubject to capture manual scrubbing from sliders
     let sliderScrubbingSubject = PassthroughSubject<VideoPlayerViewModel, Never>()
-    
+
     // During scrubbing, many progress reports were spammed
     // Send only the current report after a delay
     private var progressReportTimer: Timer?
     private var lastProgressReport: PlaybackProgressInfo?
-    
+
     // MARK: init
-    
+
     init(item: BaseItemDto,
          title: String,
          subtitle: String?,
@@ -169,27 +169,27 @@ final class VideoPlayerViewModel: ViewModel {
         self.shouldShowPlayPreviousItem = shouldShowPlayPreviousItem
         self.shouldShowPlayNextItem = shouldShowPlayNextItem
         self.shouldShowAutoPlay = shouldShowAutoPlay
-        
+
         self.jumpBackwardLength = Defaults[.videoPlayerJumpBackward]
         self.jumpForwardLength = Defaults[.videoPlayerJumpForward]
         self.jumpGesturesEnabled = Defaults[.jumpGesturesEnabled]
         self.shouldShowJumpButtonsInOverlayMenu = Defaults[.shouldShowJumpButtonsInOverlayMenu]
-        
+
         self.resumeOffset = Defaults[.resumeOffset]
-        
+
         self.syncSubtitleStateWithAdjacent = Defaults[.Experimental.syncSubtitleStateWithAdjacent]
-        
+
         self.confirmClose = Defaults[.confirmClose]
-        
+
         super.init()
-        
+
         self.sliderPercentage = (item.userData?.playedPercentage ?? 0) / 100
     }
-    
+
     private func sliderPercentageChanged(newValue: Double) {
         let videoDuration = Double(item.runTimeTicks! / 10_000_000)
         let secondsScrubbedRemaining = videoDuration - currentSeconds
-        
+
         leftLabelText = calculateTimeText(from: currentSeconds)
         rightLabelText = calculateTimeText(from: secondsScrubbedRemaining)
     }
@@ -215,10 +215,10 @@ final class VideoPlayerViewModel: ViewModel {
 
 // MARK: Adjacent Items
 extension VideoPlayerViewModel {
-    
+
     func getAdjacentEpisodes() {
         guard let seriesID = item.seriesId, item.itemType == .episode else { return }
-        
+
         TvShowsAPI.getEpisodes(seriesId: seriesID,
                                userId: SessionManager.main.currentLogin.user.id,
                                adjacentTo: item.id,
@@ -226,70 +226,70 @@ extension VideoPlayerViewModel {
             .sink(receiveCompletion: { completion in
                 print(completion)
             }, receiveValue: { response in
-                
+
                 // 4 possible states:
                 //  1 - only current episode
                 //  2 - two episodes with next episode
                 //  3 - two episodes with previous episode
                 //  4 - three episodes with current in middle
-                
+
                 // State 1
                 guard let items = response.items, items.count > 1 else { return }
-                
+
                 if items.count == 2 {
                     if items[0].id == self.item.id {
                         // State 2
                         let nextItem = items[1]
-                        
+
                         nextItem.createVideoPlayerViewModel()
                             .sink { completion in
                                 self.handleAPIRequestError(completion: completion)
                             } receiveValue: { videoPlayerViewModel in
                                 videoPlayerViewModel.matchSubtitleStream(with: self)
                                 videoPlayerViewModel.matchAudioStream(with: self)
-                                
+
                                 self.nextItemVideoPlayerViewModel = videoPlayerViewModel
                             }
                             .store(in: &self.cancellables)
                     } else {
                         // State 3
                         let previousItem = items[0]
-                        
+
                         previousItem.createVideoPlayerViewModel()
                             .sink { completion in
                                 self.handleAPIRequestError(completion: completion)
                             } receiveValue: { videoPlayerViewModel in
                                 videoPlayerViewModel.matchSubtitleStream(with: self)
                                 videoPlayerViewModel.matchAudioStream(with: self)
-                                
+
                                 self.previousItemVideoPlayerViewModel = videoPlayerViewModel
                             }
                             .store(in: &self.cancellables)
                     }
                 } else {
                     // State 4
-                    
+
                     let previousItem = items[0]
                     let nextItem = items[2]
-                    
+
                     previousItem.createVideoPlayerViewModel()
                         .sink { completion in
                             self.handleAPIRequestError(completion: completion)
                         } receiveValue: { videoPlayerViewModel in
                             videoPlayerViewModel.matchSubtitleStream(with: self)
                             videoPlayerViewModel.matchAudioStream(with: self)
-                            
+
                             self.previousItemVideoPlayerViewModel = videoPlayerViewModel
                         }
                         .store(in: &self.cancellables)
-                    
+
                     nextItem.createVideoPlayerViewModel()
                         .sink { completion in
                             self.handleAPIRequestError(completion: completion)
                         } receiveValue: { videoPlayerViewModel in
                             videoPlayerViewModel.matchSubtitleStream(with: self)
                             videoPlayerViewModel.matchAudioStream(with: self)
-                            
+
                             self.nextItemVideoPlayerViewModel = videoPlayerViewModel
                         }
                         .store(in: &self.cancellables)
@@ -297,33 +297,33 @@ extension VideoPlayerViewModel {
             })
             .store(in: &cancellables)
     }
-    
+
     // Potential for experimental feature of syncing subtitle states among adjacent episodes
     // when using previous & next item buttons and auto-play
-    
+
     private func matchSubtitleStream(with masterViewModel: VideoPlayerViewModel) {
         if !masterViewModel.subtitlesEnabled {
             matchSubtitlesEnabled(with: masterViewModel)
         }
-        
+
         guard let masterSubtitleStream = masterViewModel.subtitleStreams.first(where: { $0.index == masterViewModel.selectedSubtitleStreamIndex }),
               let matchingSubtitleStream = self.subtitleStreams.first(where: { mediaStreamAboutEqual($0, masterSubtitleStream) }),
               let matchingSubtitleStreamIndex = matchingSubtitleStream.index else { return }
-        
+
         self.selectedSubtitleStreamIndex = matchingSubtitleStreamIndex
     }
-    
+
     private func matchAudioStream(with masterViewModel: VideoPlayerViewModel) {
         guard let currentAudioStream = masterViewModel.audioStreams.first(where: { $0.index == masterViewModel.selectedAudioStreamIndex }),
               let matchingAudioStream = self.audioStreams.first(where: { mediaStreamAboutEqual($0, currentAudioStream) }) else { return }
-        
+
         self.selectedAudioStreamIndex = matchingAudioStream.index ?? -1
     }
-    
+
     private func matchSubtitlesEnabled(with masterViewModel: VideoPlayerViewModel) {
         self.subtitlesEnabled = masterViewModel.subtitlesEnabled
     }
-    
+
     private func mediaStreamAboutEqual(_ lhs: MediaStream, _ rhs: MediaStream) -> Bool {
         return lhs.displayTitle == rhs.displayTitle && lhs.language == rhs.language
     }
@@ -331,7 +331,7 @@ extension VideoPlayerViewModel {
 
 // MARK: Progress Report Timer
 extension VideoPlayerViewModel {
-    
+
     private func sendNewProgressReportWithTimer() {
         self.progressReportTimer?.invalidate()
         self.progressReportTimer = Timer.scheduledTimer(timeInterval: 0.7, target: self, selector: #selector(_sendProgressReport), userInfo: nil, repeats: false)
@@ -340,15 +340,14 @@ extension VideoPlayerViewModel {
 
 // MARK: Updates
 extension VideoPlayerViewModel {
-    
-    
+
     // MARK: sendPlayReport
     func sendPlayReport() {
-        
+
         self.startTimeTicks = Int64(Date().timeIntervalSince1970) * 10_000_000
-        
+
         let subtitleStreamIndex = subtitlesEnabled ? selectedSubtitleStreamIndex : nil
-        
+
         let startInfo = PlaybackStartInfo(canSeek: true,
                                           item: item,
                                           itemId: item.id,
@@ -370,7 +369,7 @@ extension VideoPlayerViewModel {
                                           nowPlayingQueue: nil,
                                           playlistItemId: "playlistItem0"
         )
-        
+
         PlaystateAPI.reportPlaybackStart(playbackStartInfo: startInfo)
             .sink { completion in
                 self.handleAPIRequestError(completion: completion)
@@ -379,12 +378,12 @@ extension VideoPlayerViewModel {
             }
             .store(in: &cancellables)
     }
-    
+
     // MARK: sendPauseReport
     func sendPauseReport(paused: Bool) {
-        
+
         let subtitleStreamIndex = subtitlesEnabled ? selectedSubtitleStreamIndex : nil
-        
+
         let pauseInfo = PlaybackStartInfo(canSeek: true,
                                           item: item,
                                           itemId: item.id,
@@ -406,7 +405,7 @@ extension VideoPlayerViewModel {
                                           nowPlayingQueue: nil,
                                           playlistItemId: "playlistItem0"
         )
-        
+
         PlaystateAPI.reportPlaybackStart(playbackStartInfo: pauseInfo)
             .sink { completion in
                 self.handleAPIRequestError(completion: completion)
@@ -415,12 +414,12 @@ extension VideoPlayerViewModel {
             }
             .store(in: &cancellables)
     }
-    
+
     // MARK: sendProgressReport
     func sendProgressReport() {
-        
+
         let subtitleStreamIndex = subtitlesEnabled ? selectedSubtitleStreamIndex : nil
-        
+
         let progressInfo = PlaybackProgressInfo(canSeek: true,
                                                 item: item,
                                                 itemId: item.id,
@@ -441,15 +440,15 @@ extension VideoPlayerViewModel {
                                                 repeatMode: .repeatNone,
                                                 nowPlayingQueue: nil,
                                                 playlistItemId: "playlistItem0")
-        
+
         self.lastProgressReport = progressInfo
-        
+
         self.sendNewProgressReportWithTimer()
     }
-    
+
     @objc private func _sendProgressReport() {
         guard let lastProgressReport = lastProgressReport else { return }
-        
+
         PlaystateAPI.reportPlaybackProgress(playbackProgressInfo: lastProgressReport)
             .sink { completion in
                 self.handleAPIRequestError(completion: completion)
@@ -457,13 +456,13 @@ extension VideoPlayerViewModel {
                 LogManager.shared.log.debug("Playback progress sent for item: \(self.item.id ?? "No ID")")
             }
             .store(in: &cancellables)
-        
+
         self.lastProgressReport = nil
     }
-    
+
     // MARK: sendStopReport
     func sendStopReport() {
-        
+
         let stopInfo = PlaybackStopInfo(item: item,
                                         itemId: item.id,
                                         sessionId: response.playSessionId,
@@ -475,7 +474,7 @@ extension VideoPlayerViewModel {
                                         nextMediaType: nil,
                                         playlistItemId: "playlistItem0",
                                         nowPlayingQueue: nil)
-        
+
         PlaystateAPI.reportPlaybackStopped(playbackStopInfo: stopInfo)
             .sink { completion in
                 self.handleAPIRequestError(completion: completion)
@@ -488,21 +487,21 @@ extension VideoPlayerViewModel {
 
 // MARK: Embedded/Normal Subtitle Streams
 extension VideoPlayerViewModel {
-    
+
     func createEmbeddedSubtitleStream(with subtitleStream: MediaStream) -> URL {
-        
+
         guard let baseURL = URLComponents(url: streamURL, resolvingAgainstBaseURL: false) else { fatalError() }
         guard let queryItems = baseURL.queryItems else { fatalError() }
-        
+
         var newURL = baseURL
         var newQueryItems = queryItems
-        
+
         newQueryItems.removeAll(where: { $0.name == "SubtitleStreamIndex" })
         newQueryItems.removeAll(where: { $0.name == "SubtitleMethod" })
-        
+
         newURL.addQueryItem(name: "SubtitleMethod", value: "Encode")
         newURL.addQueryItem(name: "SubtitleStreamIndex", value: "\(subtitleStream.index ?? -1)")
-        
+
         return newURL.url!
     }
 }

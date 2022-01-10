@@ -13,7 +13,7 @@ import UIKit
 enum OverlaySliderColor: String, CaseIterable, DefaultsSerializable {
     case white
     case jellyfinPurple
-    
+
     var displayLabel: String {
         switch self {
         case .white:

@@ -15,14 +15,14 @@ struct LibraryListView: View {
     @EnvironmentObject var mainCoordinator: MainCoordinator.Router
     @EnvironmentObject var libraryListRouter: LibraryListCoordinator.Router
     @StateObject var viewModel = LibraryListViewModel()
-    
+
     @Default(.Experimental.liveTVAlphaEnabled) var liveTVAlphaEnabled
 
     var body: some View {
         ScrollView {
             LazyVStack {
                 if !viewModel.isLoading {
-                    
+
                     if let collectionLibraryItem = viewModel.libraries.first(where: { $0.collectionType == "boxsets" }) {
                         Button() {
                             self.libraryListRouter.route(to: \.library,
@@ -48,7 +48,7 @@ struct LibraryListView: View {
                         .shadow(radius: 5)
                         .padding(.bottom, 5)
                     }
-                    
+
                     ForEach(viewModel.libraries.filter({ $0.collectionType != "boxsets" }), id: \.id) { library in
                         if library.collectionType == "livetv" {
                             if liveTVAlphaEnabled {

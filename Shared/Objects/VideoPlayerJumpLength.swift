@@ -19,11 +19,11 @@ enum VideoPlayerJumpLength: Int32, CaseIterable, Defaults.Serializable {
     var label: String {
         return "\(self.rawValue) seconds"
     }
-    
+
     var shortLabel: String {
         return "\(self.rawValue)s"
     }
-    
+
     var forwardImageLabel: String {
         switch self {
         case .thirty:
@@ -36,7 +36,7 @@ enum VideoPlayerJumpLength: Int32, CaseIterable, Defaults.Serializable {
             return "goforward.5"
         }
     }
-    
+
     var backwardImageLabel: String {
         switch self {
         case .thirty:

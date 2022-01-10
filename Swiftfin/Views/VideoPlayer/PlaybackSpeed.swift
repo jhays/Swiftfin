@@ -18,7 +18,7 @@ enum PlaybackSpeed: Double, CaseIterable {
     case oneHalf = 1.5
     case oneThreeQuarter = 1.75
     case two = 2.0
-    
+
     var displayTitle: String {
         switch self {
         case .quarter:

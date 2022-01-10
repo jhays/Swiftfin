@@ -12,7 +12,7 @@ import JellyfinAPI
 import SwiftUI
 
 struct ItemViewBody: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @EnvironmentObject private var viewModel: ItemViewModel
     @Default(.showCastAndCrew) var showCastAndCrew
@@ -58,15 +58,15 @@ struct ItemViewBody: View {
                 }
                                .padding(.bottom)
             }
-            
+
             // MARK: Episodes
-            
+
             if let episodeViewModel = viewModel as? EpisodeItemViewModel {
                 EpisodesRowView(viewModel: EpisodesRowViewModel(episodeItemViewModel: episodeViewModel))
             }
-            
+
             // MARK: Series
-            
+
             if let episodeViewModel = viewModel as? EpisodeItemViewModel {
                 if let seriesItem = episodeViewModel.series {
                     let a = [seriesItem]
@@ -80,9 +80,9 @@ struct ItemViewBody: View {
                     }
                 }
             }
-            
+
             // MARK: Collection Items
-            
+
             if let collectionViewModel = viewModel as? CollectionItemViewModel {
                 PortraitImageHStackView(items: collectionViewModel.collectionItems) {
                     Text("Items")
@@ -125,9 +125,9 @@ struct ItemViewBody: View {
                                             itemRouter.route(to: \.item, item)
                                         })
             }
-            
+
             // MARK: Details
-            
+
             switch viewModel.item.itemType {
             case .movie, .episode:
                 ItemViewDetailsView(viewModel: viewModel)

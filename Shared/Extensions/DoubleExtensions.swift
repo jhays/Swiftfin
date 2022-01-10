@@ -10,14 +10,14 @@
 import Foundation
 
 extension Double {
-    
+
     func subtract(_ other: Double, floor: Double) -> Double {
         var v = self - other
-        
+
         if v < floor {
             v += abs(floor - v)
         }
-        
+
         return v
     }
 }

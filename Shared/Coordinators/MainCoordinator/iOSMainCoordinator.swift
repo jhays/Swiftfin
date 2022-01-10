@@ -20,7 +20,7 @@ final class MainCoordinator: NavigationCoordinatable {
 
     @Root var mainTab = makeMainTab
     @Root var serverList = makeServerList
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -49,7 +49,7 @@ final class MainCoordinator: NavigationCoordinatable {
         nc.addObserver(self, selector: #selector(didLogOut), name: SwiftfinNotificationCenter.Keys.didSignOut, object: nil)
         nc.addObserver(self, selector: #selector(processDeepLink), name: SwiftfinNotificationCenter.Keys.processDeepLink, object: nil)
         nc.addObserver(self, selector: #selector(didChangeServerCurrentURI), name: SwiftfinNotificationCenter.Keys.didChangeServerCurrentURI, object: nil)
-        
+
         Defaults.publisher(.appAppearance)
             .sink { _ in
                 JellyfinPlayerApp.setupAppearance()

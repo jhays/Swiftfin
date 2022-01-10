@@ -14,9 +14,9 @@ import Sliders
 import SwiftUI
 
 struct VLCPlayerOverlayView: View {
-    
+
     @ObservedObject var viewModel: VideoPlayerViewModel
-    
+
     @ViewBuilder
     private var mainButtonView: some View {
         if viewModel.overlayType == .normal {
@@ -44,14 +44,14 @@ struct VLCPlayerOverlayView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var mainBody: some View {
         VStack {
-            
+
             // MARK: Top Bar
             ZStack {
-                
+
                 if viewModel.overlayType == .compact {
                     LinearGradient(gradient: Gradient(colors: [.black.opacity(0.7), .clear]),
                                    startPoint: .top,
@@ -59,11 +59,11 @@ struct VLCPlayerOverlayView: View {
                         .ignoresSafeArea()
                         .frame(height: 80)
                 }
-                
+
                 VStack(alignment: .EpisodeSeriesAlignmentGuide) {
-                    
+
                     HStack(alignment: .center) {
-                        
+
                         HStack {
                             Button {
                                 viewModel.playerOverlayDelegate?.didSelectClose()
@@ -72,18 +72,18 @@ struct VLCPlayerOverlayView: View {
                                     .padding()
                                         .padding(.trailing, -10)
                             }
-                            
+
                             Text(viewModel.title)
                                 .font(.system(size: 28, weight: .regular, design: .default))
                                 .alignmentGuide(.EpisodeSeriesAlignmentGuide) { context in
                                     context[.leading]
                                 }
                         }
-                        
+
                         Spacer()
-                        
+
                         HStack(spacing: 20) {
-                            
+
                             if viewModel.shouldShowPlayPreviousItem {
                                 Button {
                                     viewModel.playerOverlayDelegate?.didSelectPlayPreviousItem()
@@ -93,7 +93,7 @@ struct VLCPlayerOverlayView: View {
                                 .disabled(viewModel.previousItemVideoPlayerViewModel == nil)
                                 .foregroundColor(viewModel.nextItemVideoPlayerViewModel == nil ? .gray : .white)
                             }
-                            
+
                             if viewModel.shouldShowPlayNextItem {
                                 Button {
                                     viewModel.playerOverlayDelegate?.didSelectPlayNextItem()
@@ -103,7 +103,7 @@ struct VLCPlayerOverlayView: View {
                                 .disabled(viewModel.nextItemVideoPlayerViewModel == nil)
                                 .foregroundColor(viewModel.nextItemVideoPlayerViewModel == nil ? .gray : .white)
                             }
-                            
+
                             if viewModel.shouldShowAutoPlay {
                                 Button {
                                     viewModel.autoplayEnabled.toggle()
@@ -115,7 +115,7 @@ struct VLCPlayerOverlayView: View {
                                     }
                                 }
                             }
-                            
+
                             if !viewModel.subtitleStreams.isEmpty {
                                 Button {
                                     viewModel.subtitlesEnabled.toggle()
@@ -129,7 +129,7 @@ struct VLCPlayerOverlayView: View {
                                 .disabled(viewModel.selectedSubtitleStreamIndex == -1)
                                 .foregroundColor(viewModel.selectedSubtitleStreamIndex == -1 ? .gray : .white)
                             }
-                            
+
                             // MARK: Settings Menu
                             Menu {
 
@@ -189,7 +189,7 @@ struct VLCPlayerOverlayView: View {
                                         Text("Playback Speed")
                                     }
                                 }
-                                
+
                                 if viewModel.shouldShowJumpButtonsInOverlayMenu {
                                     Menu {
                                         ForEach(VideoPlayerJumpLength.allCases, id: \.self) { forwardLength in
@@ -209,7 +209,7 @@ struct VLCPlayerOverlayView: View {
                                             Text("Jump Forward Length")
                                         }
                                     }
-                                    
+
                                     Menu {
                                         ForEach(VideoPlayerJumpLength.allCases, id: \.self) { backwardLength in
                                             Button {
@@ -236,7 +236,7 @@ struct VLCPlayerOverlayView: View {
                     }
                     .font(.system(size: 24))
                     .frame(height: 50)
-                    
+
                     if let seriesTitle = viewModel.subtitle {
                         Text(seriesTitle)
                             .font(.subheadline)
@@ -250,11 +250,11 @@ struct VLCPlayerOverlayView: View {
             }
             .padding(.horizontal, UIDevice.current.userInterfaceIdiom == .pad ? 50 : 0)
             .padding(.top, UIDevice.current.userInterfaceIdiom == .pad ? 10 : 0)
-            
+
             // MARK: Center
-            
+
             Spacer()
-            
+
             if viewModel.overlayType == .normal {
                 HStack(spacing: 80) {
                     Button {
@@ -262,14 +262,14 @@ struct VLCPlayerOverlayView: View {
                     } label: {
                         Image(systemName: viewModel.jumpBackwardLength.backwardImageLabel)
                     }
-                    
+
                     Button {
                         viewModel.playerOverlayDelegate?.didSelectMain()
                     } label: {
                         mainButtonView
                     }
                     .frame(width: 200)
-                    
+
                     Button {
                         viewModel.playerOverlayDelegate?.didSelectForward()
                     } label: {
@@ -278,12 +278,12 @@ struct VLCPlayerOverlayView: View {
                 }
                 .font(.system(size: 48))
             }
-            
+
             Spacer()
-            
+
             // MARK: Bottom Bar
             ZStack {
-                
+
                 if viewModel.overlayType == .compact {
                     LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.7)]),
                                    startPoint: .top,
@@ -291,9 +291,9 @@ struct VLCPlayerOverlayView: View {
                         .ignoresSafeArea()
                         .frame(height: 70)
                 }
-                
+
                 HStack {
-                    
+
                     if viewModel.overlayType == .compact {
                         HStack {
                             Button {
@@ -302,7 +302,7 @@ struct VLCPlayerOverlayView: View {
                                 Image(systemName: viewModel.jumpBackwardLength.backwardImageLabel)
                                     .padding(.horizontal, 5)
                             }
-                            
+
                             Button {
                                 viewModel.playerOverlayDelegate?.didSelectMain()
                             } label: {
@@ -310,7 +310,7 @@ struct VLCPlayerOverlayView: View {
                                     .frame(minWidth: 30, maxWidth: 30)
                                     .padding(.horizontal, 10)
                             }
-                            
+
                             Button {
                                 viewModel.playerOverlayDelegate?.didSelectForward()
                             } label: {
@@ -320,11 +320,11 @@ struct VLCPlayerOverlayView: View {
                         }
                         .font(.system(size: 24, weight: .semibold, design: .default))
                     }
-                    
+
                     Text(viewModel.leftLabelText)
                         .font(.system(size: 18, weight: .semibold, design: .default))
                         .frame(minWidth: 70, maxWidth: 70)
-                    
+
                     ValueSlider(value: $viewModel.sliderPercentage, onEditingChanged: { editing in
                         viewModel.sliderIsScrubbing = editing
                     })
@@ -343,7 +343,7 @@ struct VLCPlayerOverlayView: View {
                                                            options: .defaultOptions)
                         )
                         .frame(maxHeight: 50)
-                    
+
                     Text(viewModel.rightLabelText)
                         .font(.system(size: 18, weight: .semibold, design: .default))
                         .frame(minWidth: 70, maxWidth: 70)
@@ -357,7 +357,7 @@ struct VLCPlayerOverlayView: View {
         .tint(Color.white)
         .foregroundColor(Color.white)
     }
-    
+
     var body: some View {
         if viewModel.overlayType == .normal {
             mainBody
@@ -380,7 +380,7 @@ struct VLCPlayerOverlayView: View {
 }
 
 struct VLCPlayerCompactOverlayView_Previews: PreviewProvider {
-    
+
     static let videoPlayerViewModel = VideoPlayerViewModel(item: BaseItemDto(),
                                                     title: "Glorious Purpose",
                                                     subtitle: "Loki - S1E1",
@@ -397,12 +397,12 @@ struct VLCPlayerCompactOverlayView_Previews: PreviewProvider {
                                                     shouldShowPlayPreviousItem: true,
                                                     shouldShowPlayNextItem: true,
                                                     shouldShowAutoPlay: true)
-    
+
     static var previews: some View {
         ZStack {
             Color.red
                 .ignoresSafeArea()
-            
+
             VLCPlayerOverlayView(viewModel: videoPlayerViewModel)
         }
         .previewInterfaceOrientation(.landscapeLeft)
@@ -411,7 +411,7 @@ struct VLCPlayerCompactOverlayView_Previews: PreviewProvider {
 
 // MARK: TitleSubtitleAlignment
 extension HorizontalAlignment {
-    
+
     private struct TitleSubtitleAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> CGFloat {
             context[HorizontalAlignment.leading]

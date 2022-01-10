@@ -32,12 +32,12 @@ struct HomeView: View {
                         .foregroundColor(Color.red)
                         .frame(width: 100, height: 100)
                 }
-                
+
                 Text("\(errorMessage.code)")
                 Text(errorMessage.displayMessage)
                     .frame(minWidth: 50, maxWidth: 240)
                     .multilineTextAlignment(.center)
-                
+
                 PrimaryButtonView(title: "Retry") {
                     viewModel.refresh()
                 }
@@ -65,17 +65,17 @@ struct HomeView: View {
                         }
 
                     }
-                    
+
                     ForEach(viewModel.libraries, id: \.self) { library in
-                        
+
                         LatestMediaView(viewModel: LatestMediaViewModel(library: library)) {
                             HStack {
                                 Text(L10n.latestWithString(library.name ?? ""))
                                     .font(.title2)
                                     .fontWeight(.bold)
-                                
+
                                 Spacer()
-                                
+
                                 Button {
                                     homeRouter
                                         .route(to: \.library, (viewModel: .init(parentID: library.id!,
@@ -90,7 +90,7 @@ struct HomeView: View {
                             }
                             .padding()
                         }
-                        
+
                     }
                 }
                 .padding(.bottom, 50)

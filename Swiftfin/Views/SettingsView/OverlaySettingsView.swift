@@ -11,13 +11,13 @@ import Defaults
 import SwiftUI
 
 struct OverlaySettingsView: View {
-    
+
     @Default(.overlayType) var overlayType
     @Default(.shouldShowPlayPreviousItem) var shouldShowPlayPreviousItem
     @Default(.shouldShowPlayNextItem) var shouldShowPlayNextItem
     @Default(.shouldShowAutoPlay) var shouldShowAutoPlay
     @Default(.shouldShowJumpButtonsInOverlayMenu) var shouldShowJumpButtonsInOverlayMenu
-    
+
     var body: some View {
         Form {
             Section(header: Text("Overlay")) {
@@ -26,7 +26,7 @@ struct OverlaySettingsView: View {
                         Text(overlay.label).tag(overlay)
                     }
                 }
-                
+
                 Toggle("\(Image(systemName: "chevron.left.circle")) Play Previous Item", isOn: $shouldShowPlayPreviousItem)
                 Toggle("\(Image(systemName: "chevron.right.circle")) Play Next Item", isOn: $shouldShowPlayNextItem)
                 Toggle("\(Image(systemName: "play.circle.fill")) Auto Play", isOn: $shouldShowAutoPlay)

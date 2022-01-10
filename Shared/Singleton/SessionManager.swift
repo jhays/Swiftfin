@@ -20,13 +20,12 @@ typealias CurrentLogin = (server: SwiftfinStore.State.Server, user: SwiftfinStor
 // MARK: NewSessionManager
 final class SessionManager {
 
-    
     // MARK: currentLogin
-    
+
     private(set) var currentLogin: CurrentLogin!
 
     // MARK: main
-    
+
     static let main = SessionManager()
 
     // MARK: init
@@ -184,7 +183,7 @@ final class SessionManager {
 
                 guard let username = response.user?.name,
                       let id = response.user?.id else { throw JellyfinAPIError("Missing user data from network call") }
-                
+
                 newUser.username = username
                 newUser.id = id
                 newUser.appleTVID = ""

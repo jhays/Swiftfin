@@ -9,7 +9,7 @@ import Stinsen
 import SwiftUI
 
 struct LatestMediaView<TopBarView: View>: View {
-    
+
     @EnvironmentObject var homeRouter: HomeCoordinator.Router
     @StateObject var viewModel: LatestMediaViewModel
     var topBarView: () -> TopBarView

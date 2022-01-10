@@ -49,13 +49,13 @@ struct BasicAppSettingsView: View {
             } label: {
                 Text("Reset User Settings")
             }
-            
+
             Button {
                 resetAppSettingsTapped = true
             } label: {
                 Text("Reset App Settings")
             }
-            
+
             Button {
                 removeAllUsersTapped = true
             } label: {

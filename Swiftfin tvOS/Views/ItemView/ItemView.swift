@@ -24,9 +24,9 @@ struct ItemNavigationView: View {
 }
 
 struct ItemView: View {
-    
+
     @Default(.tvOSCinematicViews) var tvOSCinematicViews
-    
+
     private var item: BaseItemDto
 
     init(item: BaseItemDto) {
