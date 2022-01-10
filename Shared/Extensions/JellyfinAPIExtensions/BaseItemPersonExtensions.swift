@@ -63,7 +63,7 @@ extension BaseItemPerson: PortraitImageStackable {
     public var portraitImageID: String {
         return (id ?? "noid") + title + (subtitle ?? "nodescription") + blurHash + failureInitials
     }
-    
+
     public func imageURLContsructor(maxWidth: Int) -> URL {
         return self.getImage(baseURL: SessionManager.main.currentLogin.server.currentURI, maxWidth: maxWidth)
     }
@@ -85,7 +85,7 @@ extension BaseItemPerson: PortraitImageStackable {
         let initials = name.split(separator: " ").compactMap({ String($0).first })
         return String(initials)
     }
-    
+
     public var showTitle: Bool {
         return true
     }

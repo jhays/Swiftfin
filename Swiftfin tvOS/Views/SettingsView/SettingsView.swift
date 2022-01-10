@@ -27,17 +27,17 @@ struct SettingsView: View {
     var body: some View {
         GeometryReader { reader in
             HStack {
-                
+
                 Image(uiImage: UIImage(named: "App Icon")!)
                     .cornerRadius(30)
                     .scaleEffect(2)
                     .frame(width: reader.size.width / 2)
-                
+
                 Form {
                     Section(header: EmptyView()) {
-                        
+
                         Button {
-                            
+
                         } label: {
                             HStack {
                                 Text("User")
@@ -70,7 +70,7 @@ struct SettingsView: View {
                                 .font(.callout)
                         }
                     }
-                    
+
                     Section(header: Text("Video Player")) {
                         Picker("Jump Forward Length", selection: $jumpForwardLength) {
                             ForEach(VideoPlayerJumpLength.allCases, id: \.self) { length in
@@ -83,13 +83,13 @@ struct SettingsView: View {
                                 Text(length.label).tag(length.rawValue)
                             }
                         }
-                        
+
                         Toggle("Resume 5 Second Offset", isOn: $resumeOffset)
-                        
+
                         Toggle("Press Down for Menu", isOn: $downActionShowsMenu)
-                        
+
                         Toggle("Confirm Close", isOn: $confirmClose)
-                        
+
                         Button {
                             settingsRouter.route(to: \.overlaySettings)
                         } label: {
@@ -100,7 +100,7 @@ struct SettingsView: View {
                                 Image(systemName: "chevron.right")
                             }
                         }
-                        
+
                         Button {
                             settingsRouter.route(to: \.experimentalSettings)
                         } label: {
@@ -112,11 +112,11 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    
+
                     Section {
                         Toggle("Cinematic Views", isOn: $tvOSCinematicViews)
                         Toggle("Show Poster Labels", isOn: $showPosterLabels)
-                        
+
                     } header: {
                         Text("Appearance")
                     }

@@ -19,7 +19,7 @@ struct JellyfinPlayer_tvOSApp: App {
                 }
         }
     }
-    
+
     static func setupAppearance() {
         let scenes = UIApplication.shared.connectedScenes
         let windowScene = scenes.first as? UIWindowScene

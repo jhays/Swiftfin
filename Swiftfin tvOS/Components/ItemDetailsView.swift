@@ -10,17 +10,17 @@
 import SwiftUI
 
 struct ItemDetailsView: View {
-    
+
     @ObservedObject var viewModel: ItemViewModel
     @FocusState private var focused: Bool
-    
+
     var body: some View {
-        
+
         ZStack(alignment: .leading) {
-            
+
             Color(UIColor.darkGray).opacity(focused ? 0.2 : 0)
                 .cornerRadius(30, corners: [.topLeft, .topRight])
-            
+
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Information")
@@ -31,9 +31,9 @@ struct ItemDetailsView: View {
                         ItemDetail(title: informationItem.title, content: informationItem.content)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Media")
                         .font(.title3)
@@ -43,7 +43,7 @@ struct ItemDetailsView: View {
                         ItemDetail(title: mediaItem.title, content: mediaItem.content)
                     }
                 }
-                
+
                 Spacer()
             }
             .ignoresSafeArea()
@@ -54,11 +54,11 @@ struct ItemDetailsView: View {
     }
 }
 
-fileprivate struct ItemDetail: View {
-    
+private struct ItemDetail: View {
+
     let title: String
     let content: String
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)

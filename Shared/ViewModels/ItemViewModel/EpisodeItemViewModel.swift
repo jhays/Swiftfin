@@ -13,13 +13,13 @@ import JellyfinAPI
 import Stinsen
 
 final class EpisodeItemViewModel: ItemViewModel {
-    
+
     @RouterObject var itemRouter: ItemCoordinator.Router?
     @Published var series: BaseItemDto?
-    
+
     override init(item: BaseItemDto) {
         super.init(item: item)
-        
+
         getEpisodeSeries()
     }
 

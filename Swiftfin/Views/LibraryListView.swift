@@ -39,7 +39,7 @@ struct LibraryListView: View {
                 .padding(.bottom, 5)
 
                 if !viewModel.isLoading {
-                    
+
                     if let collectionsLibraryItem = viewModel.libraries.first(where: { $0.collectionType == "boxsets" }) {
                         Button {
                             libraryListRouter.route(to: \.library,
@@ -68,7 +68,7 @@ struct LibraryListView: View {
                         .shadow(radius: 5)
                         .padding(.bottom, 5)
                     }
-                    
+
                     ForEach(viewModel.libraries, id: \.id) { library in
                         if library.collectionType ?? "" == "movies" || library.collectionType ?? "" == "tvshows" {
                             Button {

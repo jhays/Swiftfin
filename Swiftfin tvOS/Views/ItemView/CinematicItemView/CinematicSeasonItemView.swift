@@ -11,21 +11,21 @@ import Defaults
 import SwiftUI
 
 struct CinematicSeasonItemView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: SeasonItemViewModel
     @State var wrappedScrollView: UIScrollView?
     @Default(.showPosterLabels) var showPosterLabels
-    
+
     var body: some View {
         ZStack {
-            
+
             ImageView(src: viewModel.item.getBackdropImage(maxWidth: 1920), bh: viewModel.item.getBackdropImageBlurHash())
                 .ignoresSafeArea()
-            
+
             ScrollView {
                 VStack(spacing: 0) {
-                    
+
                     if let seriesItem = viewModel.seriesItem {
                         CinematicItemViewTopRow(viewModel: viewModel,
                                                 wrappedScrollView: wrappedScrollView,
@@ -40,25 +40,25 @@ struct CinematicSeasonItemView: View {
                             .focusSection()
                             .frame(height: UIScreen.main.bounds.height - 10)
                     }
-                    
+
                     ZStack(alignment: .topLeading) {
-                        
+
                         Color.black.ignoresSafeArea()
                             .frame(minHeight: UIScreen.main.bounds.height)
-                        
+
                         VStack(alignment: .leading, spacing: 20) {
-                            
+
                             CinematicItemAboutView(viewModel: viewModel)
-                            
+
                             SingleSeasonEpisodesRowView(viewModel: SingleSeasonEpisodesRowViewModel(seasonItemViewModel: viewModel))
-                            
+
                             if let seriesItem = viewModel.seriesItem {
                                 PortraitItemsRowView(rowTitle: "Series",
                                                      items: [seriesItem]) { seriesItem in
                                     itemRouter.route(to: \.item, seriesItem)
                                 }
                             }
-                            
+
                             if !viewModel.similarItems.isEmpty {
                                 PortraitItemsRowView(rowTitle: "Recommended",
                                                      items: viewModel.similarItems,

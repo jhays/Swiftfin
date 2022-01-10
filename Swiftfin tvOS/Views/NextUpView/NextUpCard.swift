@@ -11,10 +11,10 @@ import JellyfinAPI
 import SwiftUI
 
 struct NextUpCard: View {
-    
+
     @EnvironmentObject var homeRouter: HomeCoordinator.Router
     let item: BaseItemDto
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Button {
@@ -30,14 +30,14 @@ struct NextUpCard: View {
             }
             .buttonStyle(CardButtonStyle())
             .padding(.top)
-            
+
             VStack(alignment: .leading) {
                 Text("\(item.seriesName ?? item.name ?? "")")
                     .font(.callout)
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
                     .lineLimit(1)
-                
+
                 if item.itemType == .episode {
                     Text(item.getEpisodeLocator() ?? "")
                         .font(.callout)

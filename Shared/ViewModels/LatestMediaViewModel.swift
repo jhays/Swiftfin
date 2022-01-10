@@ -14,7 +14,7 @@ import JellyfinAPI
 final class LatestMediaViewModel: ViewModel {
 
     @Published var items = [BaseItemDto]()
-    
+
     let library: BaseItemDto
 
     init(library: BaseItemDto) {

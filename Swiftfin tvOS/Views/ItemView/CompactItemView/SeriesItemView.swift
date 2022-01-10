@@ -11,7 +11,7 @@ import SwiftUI
 import JellyfinAPI
 
 struct SeriesItemView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: SeriesItemViewModel
 
@@ -143,9 +143,7 @@ struct SeriesItemView: View {
                         ScrollView(.horizontal) {
                             LazyHStack {
                                 Spacer().frame(width: 45)
-                                
-                                
-                                
+
                                 ForEach(viewModel.seasons, id: \.id) { season in
                                     Button {
                                         itemRouter.route(to: \.item, season)

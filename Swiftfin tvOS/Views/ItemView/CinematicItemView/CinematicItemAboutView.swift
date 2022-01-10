@@ -10,21 +10,21 @@
 import SwiftUI
 
 struct CinematicItemAboutView: View {
-    
+
     @ObservedObject var viewModel: ItemViewModel
     @FocusState private var focused: Bool
-    
+
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             ImageView(src: viewModel.item.portraitHeaderViewURL(maxWidth: 257))
                 .frame(width: 257, height: 380)
                 .cornerRadius(10)
-            
+
             ZStack(alignment: .topLeading) {
                 Color(UIColor.darkGray).opacity(focused ? 0.2 : 0)
                     .cornerRadius(30)
                     .frame(height: 380)
-                
+
                 VStack(alignment: .leading) {
                     Text("About")
                         .font(.title3)

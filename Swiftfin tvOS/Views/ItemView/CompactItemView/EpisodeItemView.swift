@@ -11,7 +11,7 @@ import SwiftUI
 import JellyfinAPI
 
 struct EpisodeItemView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: EpisodeItemViewModel
 
@@ -65,7 +65,7 @@ struct EpisodeItemView: View {
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
-                    
+
                     if viewModel.item.officialRating != nil {
                         Text(viewModel.item.officialRating!).font(.subheadline)
                             .fontWeight(.semibold)
@@ -123,7 +123,7 @@ struct EpisodeItemView: View {
                             .font(.body)
                             .fontWeight(.medium)
                             .foregroundColor(.primary)
-                        
+
                         MediaPlayButtonRowView(viewModel: viewModel)
                             .environmentObject(itemRouter)
                     }

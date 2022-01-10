@@ -48,7 +48,7 @@ final class ConnectToServerViewModel: ViewModel {
             uri = "http://localhost:8096"
         }
         #endif
-        
+
         let trimmedURI = uri.trimmingCharacters(in: .whitespaces)
 
         LogManager.shared.log.debug("Attempting to connect to server at \"\(trimmedURI)\"", tag: "connectToServer")

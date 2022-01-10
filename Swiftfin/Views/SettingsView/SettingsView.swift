@@ -77,7 +77,7 @@ struct SettingsView: View {
 //                    }
 //                }
 //            }
-            
+
             Section(header: Text("Video Player")) {
                 Picker("Jump Forward Length", selection: $jumpForwardLength) {
                     ForEach(VideoPlayerJumpLength.allCases, id: \.self) { length in
@@ -90,11 +90,11 @@ struct SettingsView: View {
                         Text(length.label).tag(length.rawValue)
                     }
                 }
-                
+
                 Toggle("Jump Gestures Enabled", isOn: $jumpGesturesEnabled)
-                
+
                 Toggle("Resume 5 Second Offset", isOn: $resumeOffset)
-                
+
                 Button {
                     settingsRouter.route(to: \.overlaySettings)
                 } label: {
@@ -106,7 +106,7 @@ struct SettingsView: View {
                         Image(systemName: "chevron.right")
                     }
                 }
-                
+
                 Button {
                     settingsRouter.route(to: \.experimentalSettings)
                 } label: {
@@ -122,7 +122,7 @@ struct SettingsView: View {
             Section(header: L10n.accessibility.text) {
                 Toggle("Show Poster Labels", isOn: $showPosterLabels)
                 Toggle("Show Cast and Crew", isOn: $showCastAndCrew)
-                
+
                 Picker(L10n.appearance, selection: $appAppearance) {
                     ForEach(AppAppearance.allCases, id: \.self) { appearance in
                         Text(appearance.localizedName).tag(appearance.rawValue)

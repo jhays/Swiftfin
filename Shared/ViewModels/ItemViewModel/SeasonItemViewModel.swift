@@ -13,7 +13,7 @@ import JellyfinAPI
 import Stinsen
 
 final class SeasonItemViewModel: ItemViewModel {
-    
+
     @RouterObject var itemRouter: ItemCoordinator.Router?
     @Published var episodes: [BaseItemDto] = []
     @Published var seriesItem: BaseItemDto?
@@ -72,7 +72,7 @@ final class SeasonItemViewModel: ItemViewModel {
             playButtonItem = firstEpisode
         }
     }
-    
+
     private func getSeriesItem() {
         guard let seriesID = item.seriesId else { return }
         UserLibraryAPI.getItem(userId: SessionManager.main.currentLogin.user.id,

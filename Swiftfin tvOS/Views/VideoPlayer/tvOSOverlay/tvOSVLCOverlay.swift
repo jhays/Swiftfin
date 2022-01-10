@@ -12,10 +12,10 @@ import JellyfinAPI
 import SwiftUI
 
 struct tvOSVLCOverlay: View {
-    
+
     @ObservedObject var viewModel: VideoPlayerViewModel
     @Default(.downActionShowsMenu) var downActionShowsMenu
-    
+
     @ViewBuilder
     private var mainButtonView: some View {
         switch viewModel.playerState {
@@ -27,36 +27,36 @@ struct tvOSVLCOverlay: View {
             ProgressView()
         }
     }
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
-            
+
             LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.8), .black]),
                            startPoint: .top,
                            endPoint: .bottom)
                 .ignoresSafeArea()
                 .frame(height: viewModel.subtitle == nil ? 180 : 210)
-            
+
             VStack {
-                
+
                 Spacer()
-                
+
                 HStack(alignment: .bottom) {
-                    
+
                     VStack(alignment: .leading) {
                         if let subtitle = viewModel.subtitle {
                             Text(subtitle)
                                 .font(.subheadline)
                                 .foregroundColor(.white)
                         }
-                        
+
                         Text(viewModel.title)
                             .font(.title3)
                             .fontWeight(.bold)
                     }
 
                     Spacer()
-                    
+
                     if viewModel.shouldShowPlayPreviousItem {
                         SFSymbolButton(systemName: "chevron.left.circle", action: {
                             viewModel.playerOverlayDelegate?.didSelectPlayPreviousItem()
@@ -65,7 +65,7 @@ struct tvOSVLCOverlay: View {
                         .disabled(viewModel.previousItemVideoPlayerViewModel == nil)
                         .foregroundColor(viewModel.nextItemVideoPlayerViewModel == nil ? .gray : .white)
                     }
-                 
+
                     if viewModel.shouldShowPlayNextItem {
                         SFSymbolButton(systemName: "chevron.right.circle", action: {
                             viewModel.playerOverlayDelegate?.didSelectPlayNextItem()
@@ -74,7 +74,7 @@ struct tvOSVLCOverlay: View {
                         .disabled(viewModel.nextItemVideoPlayerViewModel == nil)
                         .foregroundColor(viewModel.nextItemVideoPlayerViewModel == nil ? .gray : .white)
                     }
-                    
+
                     if viewModel.shouldShowAutoPlay {
                         if viewModel.autoplayEnabled {
                             SFSymbolButton(systemName: "play.circle.fill") {
@@ -88,7 +88,7 @@ struct tvOSVLCOverlay: View {
                             .frame(maxWidth: 30, maxHeight: 30)
                         }
                     }
-                    
+
                     if !viewModel.subtitleStreams.isEmpty {
                         if viewModel.subtitlesEnabled {
                             SFSymbolButton(systemName: "captions.bubble.fill") {
@@ -102,7 +102,7 @@ struct tvOSVLCOverlay: View {
                             .frame(maxWidth: 30, maxHeight: 30)
                         }
                     }
-                    
+
                     if !downActionShowsMenu {
                         SFSymbolButton(systemName: "ellipsis.circle") {
                             viewModel.playerOverlayDelegate?.didSelectMenu()
@@ -110,21 +110,21 @@ struct tvOSVLCOverlay: View {
                         .frame(maxWidth: 30, maxHeight: 30)
                     }                }
                 .offset(x: 0, y: 10)
-                
+
                 SliderView(viewModel: viewModel)
                     .frame(maxHeight: 40)
-                
+
                 HStack {
-                    
+
                     HStack(spacing: 10) {
                         mainButtonView
                             .frame(maxWidth: 40, maxHeight: 40)
-                        
+
                         Text(viewModel.leftLabelText)
                     }
-                    
+
                     Spacer()
-                    
+
                     Text(viewModel.rightLabelText)
                 }
                 .offset(x: 0, y: -10)
@@ -135,7 +135,7 @@ struct tvOSVLCOverlay: View {
 }
 
 struct tvOSVLCOverlay_Previews: PreviewProvider {
-    
+
     static let videoPlayerViewModel = VideoPlayerViewModel(item: BaseItemDto(),
                                                     title: "Glorious Purpose",
                                                     subtitle: "Loki - S1E1",
@@ -152,12 +152,12 @@ struct tvOSVLCOverlay_Previews: PreviewProvider {
                                                     shouldShowPlayPreviousItem: true,
                                                     shouldShowPlayNextItem: true,
                                                     shouldShowAutoPlay: true)
-    
+
     static var previews: some View {
         ZStack {
             Color.red
                 .ignoresSafeArea()
-            
+
             tvOSVLCOverlay(viewModel: videoPlayerViewModel)
         }
     }

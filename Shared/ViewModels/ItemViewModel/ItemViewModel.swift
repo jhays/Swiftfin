@@ -42,7 +42,7 @@ class ItemViewModel: ViewModel {
             self.playButtonItem = item
         default: ()
         }
-        
+
         informationItems = item.createInformationItems()
         mediaItems = item.createMediaItems()
 
@@ -51,7 +51,7 @@ class ItemViewModel: ViewModel {
         super.init()
 
         getSimilarItems()
-        
+
         item.createVideoPlayerViewModel()
             .sink { completion in
                 self.handleAPIRequestError(completion: completion)
@@ -66,7 +66,7 @@ class ItemViewModel: ViewModel {
         if let itemProgressString = item.getItemProgressString() {
             return itemProgressString
         }
-        
+
         return L10n.play
     }
 

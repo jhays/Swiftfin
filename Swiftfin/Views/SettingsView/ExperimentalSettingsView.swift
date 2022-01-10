@@ -11,15 +11,15 @@ import Defaults
 import SwiftUI
 
 struct ExperimentalSettingsView: View {
-    
+
     @Default(.Experimental.syncSubtitleStateWithAdjacent) var syncSubtitleStateWithAdjacent
-    
+
     var body: some View {
         Form {
             Section {
-                
+
                 Toggle("Sync Subtitles with Adjacent Episodes", isOn: $syncSubtitleStateWithAdjacent)
-                
+
             } header: {
                 Text("Experimental")
             }

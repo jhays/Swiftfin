@@ -12,15 +12,15 @@ import Foundation
 import JellyfinAPI
 
 final class CollectionItemViewModel: ItemViewModel {
-    
+
     @Published var collectionItems: [BaseItemDto] = []
-    
+
     override init(item: BaseItemDto) {
         super.init(item: item)
-        
+
         getCollectionItems()
     }
-    
+
     private func getCollectionItems() {
         ItemsAPI.getItems(userId: SessionManager.main.currentLogin.user.id,
                           parentId: item.id,

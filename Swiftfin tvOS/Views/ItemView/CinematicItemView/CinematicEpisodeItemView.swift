@@ -12,31 +12,31 @@ import Introspect
 import SwiftUI
 
 struct CinematicEpisodeItemView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: EpisodeItemViewModel
     @State var wrappedScrollView: UIScrollView?
     @Default(.showPosterLabels) var showPosterLabels
-    
+
     func generateSubtitle() -> String? {
         guard let seriesName = viewModel.item.seriesName, let episodeLocator = viewModel.item.getEpisodeLocator() else {
             return nil
         }
-        
+
         return "\(seriesName) - \(episodeLocator)"
     }
-    
+
     var body: some View {
         ZStack {
-            
+
             ImageView(src: viewModel.item.getBackdropImage(maxWidth: 1920),
                       bh: viewModel.item.getBackdropImageBlurHash())
                 .frame(height: UIScreen.main.bounds.height - 10)
                 .ignoresSafeArea()
-            
+
             ScrollView {
                 VStack(spacing: 0) {
-                    
+
                     CinematicItemViewTopRow(viewModel: viewModel,
                                             wrappedScrollView: wrappedScrollView,
                                             title: viewModel.item.name ?? "",
@@ -45,24 +45,24 @@ struct CinematicEpisodeItemView: View {
                         .frame(height: UIScreen.main.bounds.height - 10)
 
                     ZStack(alignment: .topLeading) {
-                        
+
                         Color.black.ignoresSafeArea()
                             .frame(minHeight: UIScreen.main.bounds.height)
-                        
+
                         VStack(alignment: .leading, spacing: 20) {
-                            
+
                             CinematicItemAboutView(viewModel: viewModel)
-                            
+
                             EpisodesRowView(viewModel: EpisodesRowViewModel(episodeItemViewModel: viewModel))
                                 .focusSection()
-                            
+
                             if let seriesItem = viewModel.series {
                                 PortraitItemsRowView(rowTitle: "Series",
                                                      items: [seriesItem]) { seriesItem in
                                     itemRouter.route(to: \.item, seriesItem)
                                 }
                             }
-                            
+
                             if !viewModel.similarItems.isEmpty {
                                 PortraitItemsRowView(rowTitle: "Recommended",
                                                      items: viewModel.similarItems,
@@ -70,7 +70,7 @@ struct CinematicEpisodeItemView: View {
                                     itemRouter.route(to: \.item, item)
                                 }
                             }
-                            
+
                             ItemDetailsView(viewModel: viewModel)
                         }
                         .padding(.top, 50)

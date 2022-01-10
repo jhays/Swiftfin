@@ -14,7 +14,7 @@ struct ConnectToServerView: View {
 
     @StateObject var viewModel: ConnectToServerViewModel
     @State var uri = ""
-    
+
     @Default(.defaultHTTPScheme) var defaultHTTPScheme
 
     var body: some View {
@@ -29,7 +29,7 @@ struct ConnectToServerView: View {
                             uri = "\(defaultHTTPScheme.rawValue)://"
                         }
                     }
-                
+
                 Button {
                     viewModel.connectToServer(uri: uri)
                 } label: {

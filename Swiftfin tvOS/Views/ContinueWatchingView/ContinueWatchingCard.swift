@@ -11,10 +11,10 @@ import JellyfinAPI
 import SwiftUI
 
 struct ContinueWatchingCard: View {
-    
+
     @EnvironmentObject var homeRouter: HomeCoordinator.Router
     let item: BaseItemDto
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Button {
@@ -30,7 +30,7 @@ struct ContinueWatchingCard: View {
                             .frame(width: 500, height: 281.25)
                     }
 
-                    VStack(alignment: .leading, spacing: 0)  {
+                    VStack(alignment: .leading, spacing: 0) {
                         Text(item.getItemProgressString() ?? "")
                             .font(.subheadline)
                             .padding(.vertical, 5)

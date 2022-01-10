@@ -10,15 +10,15 @@
 import SwiftUI
 
 struct PrimaryButtonView: View {
-    
+
     private let title: String
     private let action: () -> Void
-    
+
     init(title: String, _ action: @escaping () -> Void) {
         self.title = title
         self.action = action
     }
-    
+
     var body: some View {
         Button {
             action()

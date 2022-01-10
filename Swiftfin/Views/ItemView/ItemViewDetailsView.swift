@@ -11,18 +11,18 @@ import JellyfinAPI
 import SwiftUI
 
 struct ItemViewDetailsView: View {
-    
+
     @ObservedObject var viewModel: ItemViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading) {
-            
+
             if !viewModel.informationItems.isEmpty {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Information")
                         .font(.title3)
                         .fontWeight(.bold)
-                    
+
                     ForEach(viewModel.informationItems, id: \.self.title) { informationItem in
                         VStack(alignment: .leading, spacing: 2) {
                             Text(informationItem.title)
@@ -35,13 +35,13 @@ struct ItemViewDetailsView: View {
                 }
                 .padding(.bottom, 20)
             }
-            
+
             if !viewModel.mediaItems.isEmpty {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Media")
                         .font(.title3)
                         .fontWeight(.bold)
-                    
+
                     ForEach(viewModel.mediaItems, id: \.self.title) { mediaItem in
                         VStack(alignment: .leading, spacing: 2) {
                             Text(mediaItem.title)

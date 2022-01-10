@@ -11,7 +11,7 @@ import Foundation
 import SwiftUI
 
 struct HomeView: View {
-    
+
     @EnvironmentObject var homeRouter: HomeCoordinator.Router
     @ObservedObject var viewModel = HomeViewModel()
 
@@ -27,7 +27,7 @@ struct HomeView: View {
                     if !viewModel.resumeItems.isEmpty {
                         ContinueWatchingView(items: viewModel.resumeItems)
                     }
-                    
+
                     if !viewModel.nextUpItems.isEmpty {
                         NextUpView(items: viewModel.nextUpItems)
                     }
@@ -35,18 +35,18 @@ struct HomeView: View {
                     ForEach(viewModel.libraries, id: \.self) { library in
                         LatestMediaView(viewModel: LatestMediaViewModel(library: library))
                     }
-                    
+
                     Spacer(minLength: 100)
-                    
+
                     HStack {
                         Spacer()
-                        
+
                         Button {
                             viewModel.refresh()
                         } label: {
                             Text("Refresh")
                         }
-                        
+
                         Spacer()
                     }
                     .focusSection()

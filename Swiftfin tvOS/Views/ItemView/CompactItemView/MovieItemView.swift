@@ -11,7 +11,7 @@ import SwiftUI
 import JellyfinAPI
 
 struct MovieItemView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: MovieItemViewModel
 

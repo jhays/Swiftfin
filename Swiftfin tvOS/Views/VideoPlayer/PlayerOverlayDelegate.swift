@@ -10,22 +10,22 @@
 import Foundation
 
 protocol PlayerOverlayDelegate {
-    
+
     func didSelectClose()
     func didSelectMenu()
-    
+
     func didSelectBackward()
     func didSelectForward()
     func didSelectMain()
-    
+
     func didGenerallyTap()
-    
+
     func didBeginScrubbing()
     func didEndScrubbing()
-    
+
     func didSelectAudioStream(index: Int)
     func didSelectSubtitleStream(index: Int)
-    
+
     func didSelectPlayPreviousItem()
     func didSelectPlayNextItem()
 }

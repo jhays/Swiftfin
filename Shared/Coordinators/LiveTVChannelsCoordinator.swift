@@ -18,16 +18,16 @@ final class LiveTVChannelsCoordinator: NavigationCoordinatable {
     @Root var start = makeStart
     @Route(.modal) var modalItem = makeModalItem
     @Route(.fullScreen) var videoPlayer = makeVideoPlayer
-    
+
     func makeModalItem(item: BaseItemDto) -> NavigationViewCoordinator<ItemCoordinator> {
         return NavigationViewCoordinator(ItemCoordinator(item: item))
     }
-    
+
     func makeVideoPlayer(item: BaseItemDto) -> NavigationViewCoordinator<EmptyViewCoordinator> {
 //        NavigationViewCoordinator(VideoPlayerCoordinator(item: item))
         NavigationViewCoordinator(EmptyViewCoordinator())
     }
-    
+
     @ViewBuilder
     func makeStart() -> some View {
         LiveTVChannelsView()
@@ -38,7 +38,7 @@ final class EmptyViewCoordinator: NavigationCoordinatable {
     let stack = NavigationStack(initial: \EmptyViewCoordinator.start)
 
     @Root var start = makeStart
-    
+
     @ViewBuilder
     func makeStart() -> some View {
         Text("Empty")

@@ -11,14 +11,14 @@ import SwiftUI
 import JellyfinAPI
 
 struct PortraitItemsRowView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
-    
+
     let rowTitle: String
     let items: [BaseItemDto]
     let showItemTitles: Bool
     let selectedAction: (BaseItemDto) -> Void
-    
+
     init(rowTitle: String,
          items: [BaseItemDto],
          showItemTitles: Bool = true,
@@ -28,18 +28,18 @@ struct PortraitItemsRowView: View {
         self.showItemTitles = showItemTitles
         self.selectedAction = selectedAction
     }
-    
+
     var body: some View {
         VStack(alignment: .leading) {
-            
+
             Text(rowTitle)
                 .font(.title3)
                 .padding(.horizontal, 50)
-            
+
             ScrollView(.horizontal) {
                 HStack(alignment: .top) {
                     ForEach(items, id: \.self) { item in
-                        
+
                         VStack(spacing: 15) {
                             Button {
                                 selectedAction(item)
@@ -49,7 +49,7 @@ struct PortraitItemsRowView: View {
                             }
                             .frame(height: 380)
                             .buttonStyle(PlainButtonStyle())
-                            
+
                             if showItemTitles {
                                 Text(item.title)
                                     .lineLimit(2)

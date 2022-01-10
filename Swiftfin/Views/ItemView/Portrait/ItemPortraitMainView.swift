@@ -11,7 +11,7 @@ import JellyfinAPI
 import SwiftUI
 
 struct ItemPortraitMainView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @EnvironmentObject private var viewModel: ItemViewModel
 

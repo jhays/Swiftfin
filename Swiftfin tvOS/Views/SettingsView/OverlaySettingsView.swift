@@ -11,15 +11,15 @@ import Defaults
 import SwiftUI
 
 struct OverlaySettingsView: View {
-    
+
     @Default(.shouldShowPlayPreviousItem) var shouldShowPlayPreviousItem
     @Default(.shouldShowPlayNextItem) var shouldShowPlayNextItem
     @Default(.shouldShowAutoPlay) var shouldShowAutoPlay
-    
+
     var body: some View {
         Form {
             Section(header: Text("Overlay")) {
-                
+
                 Toggle("\(Image(systemName: "chevron.left.circle")) Play Previous Item", isOn: $shouldShowPlayPreviousItem)
                 Toggle("\(Image(systemName: "chevron.right.circle")) Play Next Item", isOn: $shouldShowPlayNextItem)
                 Toggle("\(Image(systemName: "play.circle.fill")) Auto Play", isOn: $shouldShowAutoPlay)

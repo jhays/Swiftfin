@@ -11,16 +11,16 @@ import SwiftUI
 import JellyfinAPI
 
 struct EpisodesRowView: View {
-    
+
     @EnvironmentObject var itemRouter: ItemCoordinator.Router
     @ObservedObject var viewModel: EpisodesRowViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            
+
             HStack {
                 Menu {
-                    ForEach(Array(viewModel.seasonsEpisodes.keys).sorted(by: { $0.name ?? "" < $1.name ?? ""}), id:\.self) { season in
+                    ForEach(Array(viewModel.seasonsEpisodes.keys).sorted(by: { $0.name ?? "" < $1.name ?? ""}), id: \.self) { season in
                         Button {
                             viewModel.selectedSeason = season
                         } label: {
@@ -39,11 +39,11 @@ struct EpisodesRowView: View {
                         Image(systemName: "chevron.down")
                     }
                 }
-                
+
                 Spacer()
             }
             .padding()
-            
+
             ScrollView(.horizontal, showsIndicators: false) {
                 ScrollViewReader { reader in
                     HStack(alignment: .top, spacing: 15) {
@@ -52,7 +52,7 @@ struct EpisodesRowView: View {
 
                                     ZStack {
                                         Color.gray.ignoresSafeArea()
-                                        
+
                                         ProgressView()
                                     }
                                         .mask(Rectangle().frame(width: 200, height: 112).cornerRadius(10))
@@ -95,18 +95,18 @@ struct EpisodesRowView: View {
                                 .frame(width: 200)
                                 .shadow(radius: 4, y: 2)
                             } else {
-                                ForEach(viewModel.seasonsEpisodes[selectedSeason]!, id:\.self) { episode in
+                                ForEach(viewModel.seasonsEpisodes[selectedSeason]!, id: \.self) { episode in
                                     Button {
                                         itemRouter.route(to: \.item, episode)
                                     } label: {
                                         HStack(alignment: .top) {
                                             VStack(alignment: .leading) {
-        
+
                                                 ImageView(src: episode.getBackdropImage(maxWidth: 200),
                                                           bh: episode.getBackdropImageBlurHash())
                                                     .mask(Rectangle().frame(width: 200, height: 112).cornerRadius(10))
                                                     .frame(width: 200, height: 112)
-        
+
                                                 VStack(alignment: .leading) {
                                                     Text(episode.getEpisodeLocator() ?? "")
                                                         .font(.footnote)
@@ -121,7 +121,7 @@ struct EpisodesRowView: View {
                                                         .fontWeight(.light)
                                                         .lineLimit(3)
                                                 }
-        
+
                                                 Spacer()
                                             }
                                             .frame(width: 200)
