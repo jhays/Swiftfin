@@ -14,12 +14,15 @@ final class LiveTVTabCoordinator: TabCoordinatable {
 
     var child = TabChild(startingItems: [
         \LiveTVTabCoordinator.channels,
+        \LiveTVTabCoordinator.guide,
         \LiveTVTabCoordinator.programs,
         \LiveTVTabCoordinator.home,
     ])
 
     @Route(tabItem: makeChannelsTab)
     var channels = makeChannels
+    @Route(tabItem: makeGuideTab)
+    var guide = makeGuide
     @Route(tabItem: makeProgramsTab)
     var programs = makePrograms
     @Route(tabItem: makeHomeTab)
@@ -36,7 +39,19 @@ final class LiveTVTabCoordinator: TabCoordinatable {
             L10n.channels.text
         }
     }
-
+    
+    func makeGuide() -> NavigationViewCoordinator<LiveTVGuideCoordinator> {
+        NavigationViewCoordinator(LiveTVGuideCoordinator())
+    }
+    
+    @ViewBuilder
+    func makeGuideTab(isActive: Bool) -> some View {
+        HStack {
+            Image(systemName: "calendar")
+            Text("Guide")
+        }
+    }
+    
     func makePrograms() -> NavigationViewCoordinator<LiveTVProgramsCoordinator> {
         NavigationViewCoordinator(LiveTVProgramsCoordinator())
     }

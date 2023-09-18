@@ -11,122 +11,174 @@ import Foundation
 import Get
 import JellyfinAPI
 
-struct LiveTVChannelProgram: Hashable, Identifiable {
-    let id = UUID()
-    let channel: BaseItemDto
-    let currentProgram: BaseItemDto?
-    let programs: [BaseItemDto]
+struct TimeMarker: Identifiable {
+    var id: Int
+    let time: String
 }
 
-extension Notification.Name {
-    static let livePlayerDismissed = Notification.Name("livePlayerDismissed")
+enum GuideCellItem {
+    case timeCell(String)
+    case channelCell(LiveTVChannelProgram)
+    case programCell(BaseItemDto)
 }
 
-final class LiveTVChannelsViewModel: ViewModel {
-
+final class LiveTVGuideViewModel: ViewModel {
+    
     @Published
-    var channels: [BaseItemDto] = []
+    var channels: [String: BaseItemDto] = [:]
     @Published
-    var programs: [BaseItemDto] = []
+    var programs: [String: BaseItemDto] = [:]
     @Published
     var channelPrograms: [LiveTVChannelProgram] = []
+    @Published
+    var timeMarkers: [TimeMarker] = []
+    @Published
+    var guideItems: [GuideCellItem] = []
+    @Published
+    var selectedId: String? {
+        didSet {
+            if let sId = selectedId {
+//                Task {
+//                    selectedItem = programs[sId]
+//                    guard let channelId = programsToChannels[sId], let channel = channels[channelId] else {
+//                        return
+//                    }
+//                    selectedItemInfo = "\(channel.name ?? channel.title) • Air Date • EpNum • Name • Rating "
+//                    if let genres = channel.genres {
+//                        selectedItemGenre = genres.reduce("") { "\($0) " + $1 }
+//                    }
+//                }
+            }
+        }
+    }
+    @Published
+    var selectedItem: BaseItemDto?
+    @Published
+    var selectedItemInfo: String?
+    @Published
+    var selectedItemDescription: String?
+    @Published
+    var selectedItemGenre: String?
+    
+    var programsToChannels: [String: String] = [:]
+    
+    public var dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "h:mm"
+        return df
+    }()
+    
     private var timer: Timer?
-
+    
     var currentPage = 0
     var hasNextPage = true
     private let pageSize = 100
-
+    
     var timeFormatter: DateFormatter {
         let df = DateFormatter()
         df.dateFormat = "h:mm"
         return df
     }
-
+    
     override init() {
         super.init()
         requestItems(replaceCurrentItems: true)
+        self.timeMarkers = generateTimeMarkers()
     }
-
+    
     deinit {
         stopScheduleCheckTimer()
     }
-
+    
     func refresh() {
         currentPage = 0
         hasNextPage = true
-        channels = []
-        programs = []
+        channels = [:]
+        programs = [:]
         channelPrograms = []
     }
-
+    
     func requestNextPage() {
         guard hasNextPage else { return }
-
+        
         currentPage += 1
         requestItems(replaceCurrentItems: false)
     }
-
+    
     private func requestItems(replaceCurrentItems: Bool = false) {
         if replaceCurrentItems {
             // Only set isLoading on a replace / full load
             // Otherwise fetching next page will reset the scroll position
             // as the CollectionView is removed and redrawn after loading state is toggled
             isLoading = true
-            self.channels = []
-            self.programs = []
+            self.channels = [:]
+            self.programs = [:]
             self.channelPrograms = []
         }
-
+        
         Task {
             let newChannelPrograms = try await getChannelPrograms()
-
+            
             await MainActor.run {
                 self.isLoading = false
                 self.channelPrograms.append(contentsOf: newChannelPrograms)
             }
         }
     }
-
+    
     private func getChannelPrograms() async throws -> [LiveTVChannelProgram] {
         let _ = try await getGuideInfo()
         let channelsResponse = try await getChannels()
-        guard let channels = channelsResponse.value.items, !channels.isEmpty else {
+        guard let newChannels = channelsResponse.value.items, !newChannels.isEmpty else {
             return []
         }
-        let programsResponse = try await getPrograms(channelIds: channels.compactMap(\.id))
+        let programsResponse = try await getPrograms(channelIds: newChannels.compactMap(\.id))
         let fetchedPrograms = programsResponse.value.items ?? []
         await MainActor.run {
-            self.programs.append(contentsOf: fetchedPrograms)
+            for program in fetchedPrograms {
+                if let programId = program.id {
+                    self.programs[programId] = program
+                }
+            }
         }
         var newChannelPrograms = [LiveTVChannelProgram]()
         let now = Date()
-        for channel in channels {
-            let prgs = programs.filter { item in
-                item.channelID == channel.id
+        for channel in newChannels {
+            if let channelId = channel.id {
+                self.channels[channelId] = channel
             }
-
+            let prgs = programs.filter { item in
+                item.value.channelID == channel.id
+            }
+            
             var currentPrg: BaseItemDto?
             for prg in prgs {
-                if let startDate = prg.startDate,
-                   let endDate = prg.endDate,
+                if let programId = prg.value.id, let channelId = channel.id {
+                    programsToChannels[programId] = channelId
+                }
+                if let startDate = prg.value.startDate,
+                   let endDate = prg.value.endDate,
                    now.timeIntervalSinceReferenceDate > startDate.timeIntervalSinceReferenceDate &&
-                   now.timeIntervalSinceReferenceDate < endDate.timeIntervalSinceReferenceDate
+                    now.timeIntervalSinceReferenceDate < endDate.timeIntervalSinceReferenceDate
                 {
-                    currentPrg = prg
+                    currentPrg = prg.value
                 }
             }
-
-            newChannelPrograms.append(LiveTVChannelProgram(channel: channel, currentProgram: currentPrg, programs: prgs))
+            
+            let sortedPrograms = Array(prgs.values).sorted { leftItem, rightItem in
+                return (leftItem.startDate ?? Date()) < (rightItem.startDate ?? Date())
+            }
+            newChannelPrograms.append(LiveTVChannelProgram(channel: channel, currentProgram: currentPrg, programs: sortedPrograms))
         }
-
+        
         return newChannelPrograms
     }
-
+    
     private func getGuideInfo() async throws -> Response<GuideInfo> {
         let request = Paths.getGuideInfo
         return try await userSession.client.send(request)
     }
-
+    
     func getChannels() async throws -> Response<BaseItemDtoQueryResult> {
         let parameters = Paths.GetLiveTvChannelsParameters(
             userID: userSession.user.id,
@@ -137,15 +189,15 @@ final class LiveTVChannelsViewModel: ViewModel {
             enableUserData: false,
             enableFavoriteSorting: true
         )
-
+        
         let request = Paths.getLiveTvChannels(parameters: parameters)
         return try await userSession.client.send(request)
     }
-
+    
     private func getPrograms(channelIds: [String]) async throws -> Response<BaseItemDtoQueryResult> {
         let minEndDate = Date.now.addComponentsToDate(hours: -1)
         let maxStartDate = minEndDate.addComponentsToDate(hours: 6)
-
+        
         let parameters = Paths.GetLiveTvProgramsParameters(
             channelIDs: channelIds,
             userID: userSession.user.id,
@@ -153,30 +205,30 @@ final class LiveTVChannelsViewModel: ViewModel {
             minEndDate: minEndDate,
             sortBy: ["StartDate"]
         )
-
+        
         let request = Paths.getLiveTvPrograms(parameters: parameters)
         return try await userSession.client.send(request)
     }
-
+    
     func startScheduleCheckTimer() {
         let date = Date()
         let calendar = Calendar.current
         var components = calendar.dateComponents([.era, .year, .month, .day, .hour, .minute], from: date)
-
+        
         // Run every minute
         guard let minute = components.minute else { return }
         components.second = 0
         components.minute = minute + (1 - (minute % 1))
-
+        
         guard let nextMinute = calendar.date(from: components) else { return }
-
+        
         if let existingTimer = timer {
             existingTimer.invalidate()
         }
         timer = Timer(fire: nextMinute, interval: 60, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.logger.debug("LiveTVChannels schedule check...")
-
+            
             Task {
                 await MainActor.run {
                     let channelProgramsCopy = self.channelPrograms
@@ -188,12 +240,12 @@ final class LiveTVChannelsViewModel: ViewModel {
                             if let startDate = prg.startDate,
                                let endDate = prg.endDate,
                                now.timeIntervalSinceReferenceDate > startDate.timeIntervalSinceReferenceDate &&
-                               now.timeIntervalSinceReferenceDate < endDate.timeIntervalSinceReferenceDate
+                                now.timeIntervalSinceReferenceDate < endDate.timeIntervalSinceReferenceDate
                             {
                                 currentPrg = prg
                             }
                         }
-
+                        
                         refreshedChannelPrograms
                             .append(LiveTVChannelProgram(
                                 channel: channelProgram.channel,
@@ -209,45 +261,36 @@ final class LiveTVChannelsViewModel: ViewModel {
             RunLoop.main.add(timer, forMode: .default)
         }
     }
-
+    
     func stopScheduleCheckTimer() {
         timer?.invalidate()
     }
-}
-
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
+    
+    private func generateTimeMarkers() -> [TimeMarker] {
+        let calendar = Calendar.current
+        let currentDate = Date()
+        let guideEndDate = currentDate.addComponentsToDate(days: 1)
+        
+        // Find the previous hour
+        let previousHourDate = calendar.date(byAdding: .hour, value: -1, to: currentDate) ?? currentDate
+        
+        // Calculate the start time (previous hour rounded down to nearest 30 minutes)
+        let startMinute = calendar.component(.minute, from: previousHourDate)
+        let startMinuteRounded = (startMinute / 30) * 30
+        let startTime = calendar.date(bySettingHour: calendar.component(.hour, from: previousHourDate), minute: startMinuteRounded, second: 0, of: previousHourDate) ?? currentDate
+        
+        var timeStamps: [TimeMarker] = []
+        var currentTime = startTime
+        var index = 0
+        while currentTime <= guideEndDate {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "H:mm"
+            let timeStampString = dateFormatter.string(from: currentTime)
+            timeStamps.append(TimeMarker(id: index, time: timeStampString))
+            index += 1
+            currentTime = calendar.date(byAdding: .minute, value: 30, to: currentTime) ?? Date()
         }
-    }
-}
-
-extension Date {
-    func addComponentsToDate(seconds sec: Int? = nil, minutes min: Int? = nil, hours hrs: Int? = nil, days d: Int? = nil) -> Date {
-        var dc = DateComponents()
-        if let sec = sec {
-            dc.second = sec
-        }
-        if let min = min {
-            dc.minute = min
-        }
-        if let hrs = hrs {
-            dc.hour = hrs
-        }
-        if let d = d {
-            dc.day = d
-        }
-        return Calendar.current.date(byAdding: dc, to: self)!
-    }
-
-    func midnightUTCDate() -> Date {
-        var dc: DateComponents = Calendar.current.dateComponents([.year, .month, .day], from: self)
-        dc.hour = 0
-        dc.minute = 0
-        dc.second = 0
-        dc.nanosecond = 0
-        dc.timeZone = TimeZone(secondsFromGMT: 0)
-        return Calendar.current.date(from: dc)!
+        
+        return timeStamps
     }
 }
