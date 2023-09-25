@@ -25,8 +25,8 @@ struct LiveTVGuideView: View {
     var viewModel = LiveTVGuideViewModel()
     
     @State private var offsetY: CGFloat = 0
-  
     @State private var width: CGFloat? = nil
+    @State private var selectedId: String? = nil
     
     var body: some View {
         if viewModel.isLoading {
@@ -83,6 +83,9 @@ struct LiveTVGuideView: View {
             
             PosterHStack(type: .landscape, items: [BaseItemDto]())
         }
+        .onChange(of: selectedId) { newValue in
+            viewModel.selectedId = newValue
+        }
     }
     
     @ViewBuilder
@@ -125,8 +128,8 @@ struct LiveTVGuideView: View {
                             title: program.itemTitle,
                             startTime: program.getLiveStartTimeString(formatter: viewModel.dateFormatter),
                             endTime: program.getLiveEndTimeString(formatter: viewModel.dateFormatter),
-                            width: program.cellDurationWidth,
-                            selectedId: .constant(nil)
+                            width: viewModel.cellDurationWidth(program: program),
+                            selectedId: $selectedId
                         )
                     }
                 }
@@ -157,17 +160,6 @@ struct LiveTVGuideView: View {
 
 
 private extension BaseItemDto {
-    var cellDurationWidth: CGFloat {
-        guard let runTimeTicks else {
-            return LiveTVGuideConstants.halfHourWidth
-        }
-        let seconds = CGFloat(runTimeTicks) / 10000000
-        let minutes = seconds / 60
-        let halfHours = minutes / 30
-        
-        return halfHours * LiveTVGuideConstants.halfHourWidth
-    }
-    
     var itemTitle: String {
         self.episodeTitle ?? self.title
     }

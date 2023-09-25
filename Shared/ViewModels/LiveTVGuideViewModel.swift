@@ -10,7 +10,7 @@ import Factory
 import Foundation
 import Get
 import JellyfinAPI
-
+	
 struct TimeMarker: Identifiable {
     var id: Int
     let time: String
@@ -38,16 +38,16 @@ final class LiveTVGuideViewModel: ViewModel {
     var selectedId: String? {
         didSet {
             if let sId = selectedId {
-//                Task {
-//                    selectedItem = programs[sId]
-//                    guard let channelId = programsToChannels[sId], let channel = channels[channelId] else {
-//                        return
-//                    }
-//                    selectedItemInfo = "\(channel.name ?? channel.title) • Air Date • EpNum • Name • Rating "
-//                    if let genres = channel.genres {
-//                        selectedItemGenre = genres.reduce("") { "\($0) " + $1 }
-//                    }
-//                }
+                Task {
+                    selectedItem = programs[sId]
+                    guard let channelId = programsToChannels[sId], let channel = channels[channelId] else {
+                        return
+                    }
+                    selectedItemInfo = "\(channel.name ?? channel.title) • Air Date • EpNum • Name • Rating "
+                    if let genres = channel.genres {
+                        selectedItemGenre = genres.reduce("") { "\($0) " + $1 }
+                    }
+                }
             }
         }
     }
@@ -61,6 +61,8 @@ final class LiveTVGuideViewModel: ViewModel {
     var selectedItemGenre: String?
     
     var programsToChannels: [String: String] = [:]
+    
+    private var guideStartTime: Date = Date()
     
     public var dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -82,12 +84,36 @@ final class LiveTVGuideViewModel: ViewModel {
     
     override init() {
         super.init()
-        requestItems(replaceCurrentItems: true)
         self.timeMarkers = generateTimeMarkers()
+        requestItems(replaceCurrentItems: true)
+        
     }
     
     deinit {
         stopScheduleCheckTimer()
+    }
+    
+    public func cellDurationWidth(program: BaseItemDto) -> Double {
+        guard let runTimeTicks = program.runTimeTicks, let startDate = program.startDate else {
+            return LiveTVGuideConstants.halfHourWidth
+        }
+        
+        let seconds: Double = {
+            let totalSeconds = Double(runTimeTicks) / 10000000
+            if startDate < guideStartTime {
+                let secondsBeforeStart = guideStartTime.timeIntervalSince1970 - startDate.timeIntervalSince1970
+                NSLog("program starts before guide: \(program.episodeTitle ?? program.title) start: \(dateFormatter.string(from:program.startDate!)) end \(dateFormatter.string(from:program.endDate!))")
+                return totalSeconds - secondsBeforeStart
+            } else {
+                NSLog("program: \(program.episodeTitle ?? program.title) start: \(dateFormatter.string(from:program.startDate!)) end \(dateFormatter.string(from:program.endDate!))")
+                return totalSeconds
+            }
+        }()
+        
+        
+        let minutes = seconds / 60
+        let halfHours = minutes / 30
+        return max(0, halfHours * LiveTVGuideConstants.halfHourWidth)
     }
     
     func refresh() {
@@ -148,7 +174,8 @@ final class LiveTVGuideViewModel: ViewModel {
                 self.channels[channelId] = channel
             }
             let prgs = programs.filter { item in
-                item.value.channelID == channel.id
+                guard let endTime = item.value.endDate else { return false }
+                return item.value.channelID == channel.id && !(endTime < guideStartTime)
             }
             
             var currentPrg: BaseItemDto?
@@ -168,6 +195,17 @@ final class LiveTVGuideViewModel: ViewModel {
             let sortedPrograms = Array(prgs.values).sorted { leftItem, rightItem in
                 return (leftItem.startDate ?? Date()) < (rightItem.startDate ?? Date())
             }
+//            if let firstPrg = sortedPrograms.first {
+//                var smallPrgs = [firstPrg]
+//                if sortedPrograms.count >= 2 {
+//                    smallPrgs.append(sortedPrograms[1])
+//                }
+//                if sortedPrograms.count >= 3 {
+//                    smallPrgs.append(sortedPrograms[2])
+//                }
+//
+//                newChannelPrograms.append(LiveTVChannelProgram(channel: channel, currentProgram: currentPrg, programs: smallPrgs))
+//            }
             newChannelPrograms.append(LiveTVChannelProgram(channel: channel, currentProgram: currentPrg, programs: sortedPrograms))
         }
         
@@ -274,11 +312,20 @@ final class LiveTVGuideViewModel: ViewModel {
         // Find the previous hour
         let previousHourDate = calendar.date(byAdding: .hour, value: -1, to: currentDate) ?? currentDate
         
-        // Calculate the start time (previous hour rounded down to nearest 30 minutes)
+        // Calculate the start time (previous half-hour rounded down to nearest 30 minutes)
         let startMinute = calendar.component(.minute, from: previousHourDate)
         let startMinuteRounded = (startMinute / 30) * 30
-        let startTime = calendar.date(bySettingHour: calendar.component(.hour, from: previousHourDate), minute: startMinuteRounded, second: 0, of: previousHourDate) ?? currentDate
         
+        let startTime: Date = {
+            if startMinute >= 30 {
+                // start on previous half hour
+                return calendar.date(bySettingHour: calendar.component(.hour, from: currentDate), minute: startMinuteRounded, second: 0, of: currentDate) ?? currentDate
+            } else {
+                // start on previous hour
+                return calendar.date(bySettingHour: calendar.component(.hour, from: currentDate), minute: 0, second: 0, of: currentDate) ?? currentDate
+            }
+        }()
+        guideStartTime = startTime
         var timeStamps: [TimeMarker] = []
         var currentTime = startTime
         var index = 0
