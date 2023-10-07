@@ -11,7 +11,7 @@ import Foundation
 import Get
 import JellyfinAPI
 
-struct LiveTVChannelProgram: Hashable {
+struct LiveTVChannelProgram: Hashable, Identifiable {
     let id = UUID()
     let channel: BaseItemDto
     let currentProgram: BaseItemDto?

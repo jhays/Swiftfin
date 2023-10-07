@@ -11,24 +11,27 @@ import Stinsen
 import SwiftUI
 
 final class LiveTVTabCoordinator: TabCoordinatable {
-
+    
     var child = TabChild(startingItems: [
         \LiveTVTabCoordinator.channels,
-        \LiveTVTabCoordinator.programs,
-        \LiveTVTabCoordinator.home,
+         \LiveTVTabCoordinator.guide,
+         \LiveTVTabCoordinator.programs,
+         \LiveTVTabCoordinator.home,
     ])
-
+    
     @Route(tabItem: makeChannelsTab)
     var channels = makeChannels
+    @Route(tabItem: makeGuideTab)
+    var guide = makeGuide
     @Route(tabItem: makeProgramsTab)
     var programs = makePrograms
     @Route(tabItem: makeHomeTab)
     var home = makeHome
-
+    
     func makeChannels() -> NavigationViewCoordinator<LiveTVChannelsCoordinator> {
         NavigationViewCoordinator(LiveTVChannelsCoordinator())
     }
-
+    
     @ViewBuilder
     func makeChannelsTab(isActive: Bool) -> some View {
         HStack {
@@ -36,11 +39,23 @@ final class LiveTVTabCoordinator: TabCoordinatable {
             L10n.channels.text
         }
     }
-
+    
+    func makeGuide() -> NavigationViewCoordinator<LiveTVGuideCoordinator> {
+        NavigationViewCoordinator(LiveTVGuideCoordinator())
+    }
+    
+    @ViewBuilder
+    func makeGuideTab(isActive: Bool) -> some View {
+        HStack {
+            Image(systemName: "calendar")
+            Text("Guide")
+        }
+    }
+    
     func makePrograms() -> NavigationViewCoordinator<LiveTVProgramsCoordinator> {
         NavigationViewCoordinator(LiveTVProgramsCoordinator())
     }
-
+    
     @ViewBuilder
     func makeProgramsTab(isActive: Bool) -> some View {
         HStack {
@@ -48,11 +63,11 @@ final class LiveTVTabCoordinator: TabCoordinatable {
             L10n.programs.text
         }
     }
-
+    
     func makeHome() -> LiveTVHomeView {
         LiveTVHomeView()
     }
-
+    
     @ViewBuilder
     func makeHomeTab(isActive: Bool) -> some View {
         HStack {
