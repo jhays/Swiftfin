@@ -54,7 +54,10 @@ extension BaseItemDto {
         // TODO: fix bitrate settings
         let tempOverkillBitrate = 360_000_000
         builder.setMaxBitrate(bitrate: tempOverkillBitrate)
-        let profile = builder.buildProfile()
+        var profile = builder.buildProfile()
+        if Defaults[.Experimental.liveTVForceDirectPlay] {
+            profile.directPlayProfiles = [DirectPlayProfile(type: .video)]
+        }
 
         let userSession = Container.userSession.callAsFunction()
 
@@ -71,12 +74,14 @@ extension BaseItemDto {
         )
 
         let response = try await userSession.client.send(request)
+        NSLog("liveVideoPlayerViewModel response received")
 
         var matchingMediaSource: MediaSourceInfo?
         if let responseMediaSources = response.value.mediaSources {
             for responseMediaSource in responseMediaSources {
                 if let openToken = responseMediaSource.openToken, let mediaSourceId = mediaSource.id {
                     if openToken.contains(mediaSourceId) {
+                        NSLog("liveVideoPlayerViewModel found mediaSource with through openToken mediaSourceId match")
                         matchingMediaSource = responseMediaSource
                     }
                 }
@@ -84,12 +89,15 @@ extension BaseItemDto {
             if matchingMediaSource == nil && !responseMediaSources.isEmpty {
                 // Didn't find a match, but maybe we can just grab the first item in the response
                 matchingMediaSource = responseMediaSources.first
+                NSLog("liveVideoPlayerViewModel resorting to first media source in the response")
             }
         }
         guard let matchingMediaSource else {
+            NSLog("liveVideoPlayerViewModel no matchingMediaSource found, throwing error")
             throw JellyfinAPIError("Matching media source not in playback info")
         }
 
+        NSLog("liveVideoPlayerViewModel matchingMediaSource being returned")
         return try matchingMediaSource.liveVideoPlayerViewModel(
             with: self,
             playSessionID: response.value.playSessionID!
