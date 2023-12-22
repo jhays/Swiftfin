@@ -19,10 +19,24 @@ struct LiveTVGuideConstants {
     static let spacing: CGFloat = 8
 }
 
+struct FocusedChannelValue: FocusedValueKey {
+    typealias Value = String
+}
+
+extension FocusedValues {
+    var channelValue: FocusedChannelValue.Value? {
+        get { self[FocusedChannelValue.self] }
+        set { self[FocusedChannelValue.self] = newValue }
+    }
+}
+
+@available(tvOS 16.0, *)
 struct LiveTVGuideView: View {
     
     @StateObject
     var viewModel = LiveTVGuideViewModel()
+    
+    @FocusedValue(\.channelValue) var selectedChannel
     
     @State private var offsetY: CGFloat = 0
     @State private var width: CGFloat? = nil
@@ -34,6 +48,7 @@ struct LiveTVGuideView: View {
         } else {
             VStack {
                 headerView
+                    .frame(maxHeight: 320)
 
                 ScrollView(.horizontal) {
                     timelineView
@@ -55,33 +70,48 @@ struct LiveTVGuideView: View {
                     }
                 }
             }
+            .offset(y: -16)
+            .onChange(of: selectedChannel) { selectedProgramId in
+                viewModel.selectedId = selectedProgramId
+            }
         }
     }
     
     @ViewBuilder
     var headerView: some View {
-        HStack {
+        HStack(alignment: .top, spacing: 0) {
+            
+            if let imageSource = viewModel.selectedItemImageSource {
+                ImageView(imageSource)
+                    .frame(width: 180, height: 320)
+            } else {
+                Color.gray
+                    .frame(width: 180, height: 320)
+            }
+            
             VStack(alignment: .leading) {
                 Text(viewModel.selectedItem?.itemTitle ?? " ")
                     .lineLimit(1)
                     .font(.largeTitle)
+                    .bold()
                     .focusable()
                 
                 HStack {
-                    progressBar(progress: 0.3)
+                    progressBar(progress: viewModel.selectedItemProgress )
                         .frame(width: 180, height: 40)
                     
-                    Text("27 min left")
-                        .foregroundColor(Color.jellyfinPurple)
+                    if let timeLeft = viewModel.selectedItemTimeLeft {
+                        Text(timeLeft)
+                            .foregroundColor(Color.jellyfinPurple)
+                    }
                 }
                 
-//                Text(" • Air Date • EpNum • Name • Rating")
                 Text(viewModel.selectedItemInfo ?? " ")
-                Text("Program description text string.")
                 Text(viewModel.selectedItemGenre ?? " ")
+                Text(viewModel.selectedItemDescription ?? "")
             }
-            
-            PosterHStack(type: .landscape, items: [BaseItemDto]())
+            .padding(.leading, 16)
+            Spacer()
         }
         .onChange(of: selectedId) { newValue in
             viewModel.selectedId = newValue
@@ -128,9 +158,9 @@ struct LiveTVGuideView: View {
                             title: program.itemTitle,
                             startTime: program.getLiveStartTimeString(formatter: viewModel.dateFormatter),
                             endTime: program.getLiveEndTimeString(formatter: viewModel.dateFormatter),
-                            width: viewModel.cellDurationWidth(program: program),
-                            selectedId: $selectedId
+                            width: viewModel.cellDurationWidth(program: program)
                         )
+                        .focusedValue(\.channelValue, program.id)
                     }
                 }
                 .frame(height: LiveTVGuideConstants.cellHeight)
@@ -150,7 +180,7 @@ struct LiveTVGuideView: View {
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 6, maxHeight: 6)
                     RoundedRectangle(cornerRadius: 6)
                         .fill(Color.jellyfinPurple)
-                        .frame(width: CGFloat(progress * gp.size.width), height: 6)
+                        .frame(width: CGFloat(max(0, progress) * gp.size.width), height: 6)
                 }
             }
             .frame(height: 6, alignment: .center)
@@ -172,7 +202,6 @@ struct LiveTVGuideCell: View{
     @State var startTime: String
     @State var endTime: String
     @State var width: CGFloat
-    @Binding var selectedId: String?
     @State private var backgroundColor: Color = Color.systemFill.opacity(0.1)
     @State private var borderColor: Color = Color.systemFill.opacity(0.1)
     @State private var textColor: Color = Color.primary
@@ -188,15 +217,15 @@ struct LiveTVGuideCell: View{
                     Spacer()
                 }
             }
-            VStack {
-                HStack {
-                    Text(startTime)
-                    Spacer()
-                    Text(endTime)
-                }
-                .font(.footnote)
-                Spacer()
-            }
+//            VStack {
+//                HStack {
+//                    Text(startTime)
+//                    Spacer()
+//                    Text(endTime)
+//                }
+//                .font(.footnote)
+//                Spacer()
+//            }
         }
         .frame(width: width, height: LiveTVGuideConstants.cellHeight)
         .background(backgroundColor)
@@ -209,9 +238,6 @@ struct LiveTVGuideCell: View{
                 textColor = newValue ? Color.tertiarySystemFill : Color.primary
             }
             borderColor = newValue ? Color.jellyfinPurple : .clear
-            if newValue {
-                selectedId = id
-            }
         }
         .overlay(RoundedRectangle(cornerRadius: 8).stroke(lineWidth: 1).foregroundColor(borderColor))
     }

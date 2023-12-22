@@ -32,6 +32,10 @@ final class LiveTVGuideCoordinator: NavigationCoordinatable {
     
     @ViewBuilder
     func makeStart() -> some View {
-        LiveTVGuideView()
+        if #available(tvOS 16.0, *) {
+            LiveTVGuideView()
+        } else {
+            Text("Supported on tvOS 16 and above.")
+        }
     }
 }

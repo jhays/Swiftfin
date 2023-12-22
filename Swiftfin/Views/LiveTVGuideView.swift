@@ -61,11 +61,18 @@ struct LiveTVGuideView: View {
     @ViewBuilder
     var headerView: some View {
         HStack {
+            if let imageSource = viewModel.selectedItemImageSource {
+                ImageView(imageSource)
+                    .frame(width: 180, height: 320)
+            } else {
+                Color.gray
+                    .frame(width: 180, height: 320)
+            }
+            
             VStack(alignment: .leading) {
                 Text(viewModel.selectedItem?.itemTitle ?? " ")
                     .lineLimit(1)
                     .font(.largeTitle)
-                    .focusable()
                 
                 HStack {
                     progressBar(progress: 0.3)
@@ -80,8 +87,6 @@ struct LiveTVGuideView: View {
                 Text("Program description text string.")
                 Text(viewModel.selectedItemGenre ?? " ")
             }
-            
-            PosterHStack(type: .landscape, items: [BaseItemDto]())
         }
         .onChange(of: selectedId) { newValue in
             viewModel.selectedId = newValue
@@ -201,7 +206,9 @@ struct LiveTVGuideCell: View{
         .frame(width: width, height: LiveTVGuideConstants.cellHeight)
         .background(backgroundColor)
         .cornerRadius(8)
+#if os(tvOS)
         .focusable(true)
+#endif
         .focused($isFocused)
         .onChange(of: isFocused) { newValue in
             withAnimation(Animation.linear(duration: 0.2)) {
@@ -239,7 +246,9 @@ struct LiveTVChannelCell: View{
         .frame(width: LiveTVGuideConstants.channelCellWidth, height: LiveTVGuideConstants.cellHeight)
         .background(backgroundColor)
         .cornerRadius(8)
+#if os(tvOS)
         .focusable(true)
+#endif
         .focused($isFocused)
         .onChange(of: isFocused) { newValue in
             withAnimation(Animation.linear(duration: 0.2)) {
